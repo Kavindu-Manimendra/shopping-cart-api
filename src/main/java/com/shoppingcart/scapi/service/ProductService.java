@@ -12,9 +12,9 @@ public interface ProductService {
     void deleteProductById(Long id) throws ProductNotFoundException;
     void updateProduct(Product product, Long productId);
     List<Product> getAllProducts() throws ProductRetrivedFailedException;
-    List<Product> getProductsByCategory(String category);
-    List<Product> getProductsByBrand(String brand);
-    List<Product> getProductsByCategoryAndBrand(String category, String brand);
+    List<Product> getProductsByCategory(String category) throws ProductRetrivedFailedException;
+    List<Product> getProductsByBrand(String brand) throws ProductRetrivedFailedException;
+    List<Product> getProductsByCategoryAndBrand(String category, String brand) throws ProductRetrivedFailedException;
     List<Product> getProductsByName(String name);
     List<Product> getProductsByBrandAndName(String brand, String name);
     Long countProductsByBrandAndName(String brand, String name);
