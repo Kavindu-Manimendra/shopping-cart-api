@@ -15,7 +15,7 @@ public enum ResponseCode {
     private String message;
     private String reason;
 
-    public void setMessage(String message) { this.message = message }
+    public void setMessage(String message) { this.message = message; }
 
     public void setReason(String reason) { this.reason = reason; }
 }

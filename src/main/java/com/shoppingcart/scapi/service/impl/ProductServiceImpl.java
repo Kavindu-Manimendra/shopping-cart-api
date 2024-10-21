@@ -81,6 +81,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Long countProductsByBrandAndName(String brand, String name) {
-        return 0;
+        return 0L;
     }
 }
