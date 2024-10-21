@@ -3,6 +3,7 @@ package com.shoppingcart.scapi.service.impl;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
+import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
 import com.shoppingcart.scapi.repo.ProductRepo;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Long id) throws ProductNotFoundException {
         try {
-            Optional<Product> product = productRepo.findById(id);
+            Product product = productRepo.findById(id).get();
             if (product == null) {
                 ResponseCode.PRODUCT_NOT_FOUND.setReason("Invalid ID or Product ID does not exist in the database.");
                 throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
             }
 
-            return product.get();
+            return product;
         } catch (ProductNotFoundException e) {
             throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
         } catch (Exception e) {
@@ -40,8 +41,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(Long id) {
-
+    public void deleteProductById(Long id) throws ProductNotFoundException {
+        try {
+            boolean isExist = productRepo.existsById(id);
+            if (!isExist) {
+                ResponseCode.PRODUCT_NOT_FOUND.setReason("Invalid ID or Product ID does not exist in the database.");
+                throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+            }
+            productRepo.deleteById(id);
+        } catch (ProductNotFoundException e) {
+            throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+        }
     }
 
     @Override
@@ -50,8 +60,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return List.of();
+    public List<Product> getAllProducts() throws ProductRetrivedFailedException {
+        try {
+            return productRepo.findAll();
+        } catch (Exception e) {
+            ResponseCode.LIST_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductRetrivedFailedException(ResponseCode.LIST_PRODUCT_FAIL);
+        }
     }
 
     @Override

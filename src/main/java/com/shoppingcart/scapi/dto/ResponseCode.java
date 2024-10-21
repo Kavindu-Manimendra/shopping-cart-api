@@ -10,7 +10,8 @@ public enum ResponseCode {
     SUCCESS("Success", ""),
     ERROR("Unknown Error", ""),
 
-    PRODUCT_NOT_FOUND("Product not found!", "");
+    PRODUCT_NOT_FOUND("Product not found!", ""),
+    LIST_PRODUCT_FAIL("Product listing failed!", "");
 
     private String message;
     private String reason;
