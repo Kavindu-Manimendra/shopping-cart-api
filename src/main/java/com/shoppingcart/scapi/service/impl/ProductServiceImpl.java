@@ -100,13 +100,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getProductsByName(String name) {
-        return List.of();
+    public List<Product> getProductsByName(String name) throws ProductRetrivedFailedException {
+        try {
+            return productRepo.findByName(name);
+        } catch (Exception e) {
+            ResponseCode.LIST_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductRetrivedFailedException(ResponseCode.LIST_PRODUCT_FAIL);
+        }
     }
 
     @Override
-    public List<Product> getProductsByBrandAndName(String brand, String name) {
-        return List.of();
+    public List<Product> getProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException {
+        try {
+            return productRepo.findByBrandAndName(brand, name);
+        } catch (Exception e) {
+            ResponseCode.LIST_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductRetrivedFailedException(ResponseCode.LIST_PRODUCT_FAIL);
+        }
     }
 
     @Override
