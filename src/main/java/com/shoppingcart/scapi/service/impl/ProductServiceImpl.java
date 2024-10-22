@@ -120,7 +120,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Long countProductsByBrandAndName(String brand, String name) {
-        return 0L;
+    public Long countProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException {
+        try {
+            return productRepo.countByBrandAndName(brand, name);
+        } catch (Exception e) {
+            ResponseCode.LIST_PRODUCT_FAIL.setReason("Get count by using brand and name failed. " + e.getMessage());
+            throw new ProductRetrivedFailedException(ResponseCode.LIST_PRODUCT_FAIL);
+        }
     }
 }

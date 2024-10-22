@@ -17,5 +17,5 @@ public interface ProductService {
     List<Product> getProductsByCategoryAndBrand(String category, String brand) throws ProductRetrivedFailedException;
     List<Product> getProductsByName(String name) throws ProductRetrivedFailedException;
     List<Product> getProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
-    Long countProductsByBrandAndName(String brand, String name);
+    Long countProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
 }
