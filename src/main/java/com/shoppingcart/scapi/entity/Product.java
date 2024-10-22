@@ -9,6 +9,11 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.util.List;
 
+/*
+Do not use @Data anotation in this type of entity class. Because it comes with so many functions. So its better to use
+@Getter and @Setter.
+*/
+
 @Entity
 @Getter
 @Setter

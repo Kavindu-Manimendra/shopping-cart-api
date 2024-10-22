@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // only add variables that are final. ex - ProductRepo
 public class ProductServiceImpl implements ProductService {
-    private ProductRepo productRepo;
+    private final ProductRepo productRepo;
 
     @Override
     public Product addProduct(Product product) {
