@@ -1,9 +1,13 @@
 package com.shoppingcart.scapi.service.impl;
 
+import com.shoppingcart.scapi.dto.AddProductDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
+import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
+import com.shoppingcart.scapi.exception.ProductSaveFailedException;
+import com.shoppingcart.scapi.repo.CategoryRepo;
 import com.shoppingcart.scapi.repo.ProductRepo;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +20,29 @@ import java.util.Optional;
 @RequiredArgsConstructor // only add variables that are final. ex - ProductRepo
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
 
     @Override
-    public Product addProduct(Product product) {
-        return null;
+    public Product addProduct(AddProductDto request) throws ProductSaveFailedException {
+        try {
+            Category category = categoryRepo.findByName(request.getCategory().getName());
+            if (category == null) {
+                category = categoryRepo.save(request.getCategory());
+            }
+
+            Product product = new Product(
+                    request.getName(),
+                    request.getBrand(),
+                    request.getPrice(),
+                    request.getInventory(),
+                    request.getDescription(),
+                    category
+            );
+            return productRepo.save(product);
+        } catch (Exception e) {
+            ResponseCode.CREATE_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductSaveFailedException(ResponseCode.CREATE_PRODUCT_FAIL);
+        }
     }
 
     @Override

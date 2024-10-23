@@ -18,7 +18,6 @@ Do not use @Data anotation in this type of entity class. Because it comes with s
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +35,13 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
     // orphanRemoval = true -> When product is deleted, all the related images will be deleted too.
+
+    public Product(String name, String brand, BigDecimal price, int inventory, String description, Category category) {
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+        this.inventory = inventory;
+        this.description = description;
+        this.category = category;
+    }
 }
