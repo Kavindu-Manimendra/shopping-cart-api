@@ -12,7 +12,8 @@ public enum ResponseCode {
 
     PRODUCT_NOT_FOUND("Product not found!", ""),
     LIST_PRODUCT_FAIL("Product listing failed!", ""),
-    CREATE_PRODUCT_FAIL("Product creation failed!", "");
+    CREATE_PRODUCT_FAIL("Product creation failed!", ""),
+    UPDATE_PRODUCT_FAIL("Product update failed!", "");
 
     private String message;
     private String reason;

@@ -1,6 +1,6 @@
 package com.shoppingcart.scapi.service.impl;
 
-import com.shoppingcart.scapi.dto.AddProductDto;
+import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.entity.Product;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // only add variables that are final. ex - ProductRepo
@@ -23,7 +22,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepo categoryRepo;
 
     @Override
-    public Product addProduct(AddProductDto request) throws ProductSaveFailedException {
+    public Product addProduct(ProductRequestDto request) throws ProductSaveFailedException {
         try {
             Category category = categoryRepo.findByName(request.getCategory().getName());
             if (category == null) {
@@ -78,8 +77,33 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateProduct(Product product, Long productId) {
+    public Product updateProduct(ProductRequestDto request, Long productId) throws ProductNotFoundException, ProductSaveFailedException {
+        try {
+            Product existingProduct = productRepo.findById(productId).get();
+            if (existingProduct == null) {
+                ResponseCode.PRODUCT_NOT_FOUND.setReason("Invalid ID or Product ID does not exist in the database.");
+                throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+            }
 
+            existingProduct.setName(request.getName());
+            existingProduct.setBrand(request.getBrand());
+            existingProduct.setPrice(request.getPrice());
+            existingProduct.setInventory(request.getInventory());
+            existingProduct.setDescription(request.getDescription());
+
+            Category category = categoryRepo.findByName(request.getCategory().getName());
+            if (category == null) {
+                category = categoryRepo.save(request.getCategory());
+            }
+            existingProduct.setCategory(category);
+
+            return productRepo.save(existingProduct);
+        } catch (ProductNotFoundException e) {
+            throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.UPDATE_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductSaveFailedException(ResponseCode.UPDATE_PRODUCT_FAIL);
+        }
     }
 
     @Override
