@@ -33,8 +33,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryByName(String name) {
-        return null;
+    public Category getCategoryByName(String name) throws CategoryNotFoundException{
+        try {
+            Category category = categoryRepo.findByName(name);
+            if (category == null) {
+                ResponseCode.CATEGORY_NOT_FOUND.setReason("Invalid name or Category Name does not exist in the database.");
+                throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+            }
+            return category;
+        } catch (CategoryNotFoundException e) {
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.CATEGORY_NOT_FOUND.setReason(e.getMessage());
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        }
     }
 
     @Override

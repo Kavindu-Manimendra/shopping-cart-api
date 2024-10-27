@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CategoryService {
     Category getCategoryById(Long id) throws CategoryNotFoundException;
-    Category getCategoryByName(String name);
+    Category getCategoryByName(String name) throws CategoryNotFoundException;
     List<Category> getAllCategories();
     Category addCategory(Category category);
     Category updateCategory(Category category);
