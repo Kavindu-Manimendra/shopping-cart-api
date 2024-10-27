@@ -3,6 +3,7 @@ package com.shoppingcart.scapi.service.impl;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.exception.CategoryNotFoundException;
+import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
 import com.shoppingcart.scapi.repo.CategoryRepo;
 import com.shoppingcart.scapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -50,8 +51,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategories() {
-        return List.of();
+    public List<Category> getAllCategories() throws CategoryRetrivedFailedException {
+        try {
+            return categoryRepo.findAll();
+        } catch (Exception e) {
+            ResponseCode.LIST_CATEGORY_FAIL.setReason(e.getMessage());
+            throw new CategoryRetrivedFailedException(ResponseCode.LIST_CATEGORY_FAIL);
+        }
     }
 
     @Override
