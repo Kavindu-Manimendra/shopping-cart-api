@@ -1,4 +1,59 @@
 package com.shoppingcart.scapi.service.impl;
 
-public class CategoryServiceImpl {
+import com.shoppingcart.scapi.dto.ResponseCode;
+import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.exception.CategoryNotFoundException;
+import com.shoppingcart.scapi.repo.CategoryRepo;
+import com.shoppingcart.scapi.service.CategoryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class CategoryServiceImpl implements CategoryService {
+    private final CategoryRepo categoryRepo;
+
+    @Override
+    public Category getCategoryById(Long id) throws CategoryNotFoundException {
+        try {
+            Category category = categoryRepo.findById(id).get();
+            if (category == null) {
+                ResponseCode.CATEGORY_NOT_FOUND.setReason("Invalid ID or Category ID does not exist in the database.");
+                throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+            }
+            return category;
+        } catch (CategoryNotFoundException e) {
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.CATEGORY_NOT_FOUND.setReason(e.getMessage());
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public Category getCategoryByName(String name) {
+        return null;
+    }
+
+    @Override
+    public List<Category> getAllCategories() {
+        return List.of();
+    }
+
+    @Override
+    public Category addCategory(Category category) {
+        return null;
+    }
+
+    @Override
+    public Category updateCategory(Category category) {
+        return null;
+    }
+
+    @Override
+    public void deleteCategoryById(Long id) {
+
+    }
 }
