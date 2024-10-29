@@ -2,6 +2,7 @@ package com.shoppingcart.scapi.service.impl;
 
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.exception.CategoryDeleteFailedException;
 import com.shoppingcart.scapi.exception.CategoryNotFoundException;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
 import com.shoppingcart.scapi.repo.CategoryRepo;
@@ -71,7 +72,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategoryById(Long id) {
-
+    public void deleteCategoryById(Long id) throws CategoryNotFoundException, CategoryDeleteFailedException {
+        try {
+            Category category = categoryRepo.findById(id).get();
+            if (category == null) {
+                ResponseCode.CATEGORY_NOT_FOUND.setReason("Invalid ID or Category ID does not exist in the database.");
+                throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+            }
+            categoryRepo.delete(category);
+        } catch (CategoryNotFoundException e) {
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.DELETE_CATEGORY_FAIL.setReason(e.getMessage());
+            throw new CategoryNotFoundException(ResponseCode.DELETE_CATEGORY_FAIL);
+        }
     }
 }

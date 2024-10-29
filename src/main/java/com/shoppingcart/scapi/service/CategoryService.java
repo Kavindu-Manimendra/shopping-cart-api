@@ -1,6 +1,7 @@
 package com.shoppingcart.scapi.service;
 
 import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.exception.CategoryDeleteFailedException;
 import com.shoppingcart.scapi.exception.CategoryNotFoundException;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
 
@@ -12,5 +13,5 @@ public interface CategoryService {
     List<Category> getAllCategories() throws CategoryRetrivedFailedException;
     Category addCategory(Category category);
     Category updateCategory(Category category);
-    void deleteCategoryById(Long id);
+    void deleteCategoryById(Long id) throws CategoryNotFoundException, CategoryDeleteFailedException;
 }

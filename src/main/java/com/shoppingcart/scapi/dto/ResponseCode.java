@@ -16,7 +16,8 @@ public enum ResponseCode {
     UPDATE_PRODUCT_FAIL("Product update failed!", ""),
 
     CATEGORY_NOT_FOUND("Category not found!", ""),
-    LIST_CATEGORY_FAIL("Category listing failed!", "");
+    LIST_CATEGORY_FAIL("Category listing failed!", ""),
+    DELETE_CATEGORY_FAIL("Category deletion failed!", "");
 
     private String message;
     private String reason;
