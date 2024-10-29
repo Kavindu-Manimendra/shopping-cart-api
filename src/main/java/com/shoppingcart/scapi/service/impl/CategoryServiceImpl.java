@@ -5,6 +5,7 @@ import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.exception.CategoryDeleteFailedException;
 import com.shoppingcart.scapi.exception.CategoryNotFoundException;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
+import com.shoppingcart.scapi.exception.CategorySaveFailedException;
 import com.shoppingcart.scapi.repo.CategoryRepo;
 import com.shoppingcart.scapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +68,21 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Category category) {
-        return null;
+    public Category updateCategory(Category category, Long id) throws CategoryNotFoundException, CategorySaveFailedException {
+        try {
+            Category category1 = categoryRepo.findById(id).get();
+            if (category1 == null) {
+                ResponseCode.CATEGORY_NOT_FOUND.setReason("Invalid ID or Category ID does not exist in the database.");
+                throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+            }
+            category1.setName(category.getName());
+            return categoryRepo.save(category1);
+        } catch (CategoryNotFoundException e) {
+            throw new CategoryNotFoundException(ResponseCode.CATEGORY_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.UPDATE_CATEGORY_FAIL.setReason(e.getMessage());
+            throw new CategorySaveFailedException(ResponseCode.UPDATE_CATEGORY_FAIL);
+        }
     }
 
     @Override
