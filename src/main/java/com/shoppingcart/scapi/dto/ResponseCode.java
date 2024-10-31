@@ -13,7 +13,13 @@ public enum ResponseCode {
     PRODUCT_NOT_FOUND("Product not found!", ""),
     LIST_PRODUCT_FAIL("Product listing failed!", ""),
     CREATE_PRODUCT_FAIL("Product creation failed!", ""),
-    UPDATE_PRODUCT_FAIL("Product update failed!", "");
+    UPDATE_PRODUCT_FAIL("Product update failed!", ""),
+
+    CATEGORY_NOT_FOUND("Category not found!", ""),
+    LIST_CATEGORY_FAIL("Category listing failed!", ""),
+    DELETE_CATEGORY_FAIL("Category deletion failed!", ""),
+    UPDATE_CATEGORY_FAIL("Category update failed!", ""),
+    CREATE_CATEGORY_FAIL("Category creation failed!", "");
 
     private String message;
     private String reason;
