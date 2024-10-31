@@ -63,8 +63,20 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category addCategory(Category category) {
-        return null;
+    public Category addCategory(Category category) throws CategorySaveFailedException {
+        try {
+            boolean isExists = categoryRepo.existsByName(category.getName());
+            if (isExists) {
+                ResponseCode.CREATE_CATEGORY_FAIL.setReason("Category already exists in the database.");
+                throw new CategorySaveFailedException(ResponseCode.CREATE_CATEGORY_FAIL);
+            }
+            return categoryRepo.save(category);
+        } catch (CategorySaveFailedException e) {
+            throw new CategorySaveFailedException(ResponseCode.CREATE_CATEGORY_FAIL);
+        } catch (Exception e) {
+            ResponseCode.CREATE_CATEGORY_FAIL.setReason(e.getMessage());
+            throw new CategorySaveFailedException(ResponseCode.CREATE_CATEGORY_FAIL);
+        }
     }
 
     @Override
