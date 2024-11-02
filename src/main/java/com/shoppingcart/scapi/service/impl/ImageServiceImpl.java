@@ -4,12 +4,15 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Image;
 import com.shoppingcart.scapi.exception.ImageDeleteFailedException;
 import com.shoppingcart.scapi.exception.ImageNotFoundException;
+import com.shoppingcart.scapi.exception.ImageSaveFailedException;
 import com.shoppingcart.scapi.repo.ImageRepo;
 import com.shoppingcart.scapi.service.ImageService;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +60,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void updateImage(MultipartFile file, Long imageId) {
-
+    public void updateImage(MultipartFile file, Long imageId) throws ImageNotFoundException, ImageSaveFailedException {
+        try {
+            Image image = getImageById(imageId);
+            image.setFileName(file.getOriginalFilename());
+            image.setImage(new SerialBlob(file.getBytes()));
+            imageRepo.save(image);
+        } catch (ImageNotFoundException e) {
+            throw new ImageNotFoundException(ResponseCode.IMAGE_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.UPDATE_IMAGE_FAIL.setReason(e.getMessage());
+            throw new ImageSaveFailedException(ResponseCode.UPDATE_IMAGE_FAIL);
+        }
     }
 }
