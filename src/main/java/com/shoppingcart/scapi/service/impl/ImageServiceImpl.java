@@ -1,10 +1,13 @@
 package com.shoppingcart.scapi.service.impl;
 
+import com.shoppingcart.scapi.dto.ImageDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Image;
+import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.exception.ImageDeleteFailedException;
 import com.shoppingcart.scapi.exception.ImageNotFoundException;
 import com.shoppingcart.scapi.exception.ImageSaveFailedException;
+import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.repo.ImageRepo;
 import com.shoppingcart.scapi.service.ImageService;
 import com.shoppingcart.scapi.service.ProductService;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,8 +60,38 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image saveImage(MultipartFile file, Long productId) {
-        return null;
+    public List<ImageDto> saveImages(List<MultipartFile> files, Long productId) throws ProductNotFoundException, ImageSaveFailedException {
+        try {
+            Product product = productService.getProductById(productId);
+            List<ImageDto> savedImageDtos = new ArrayList<>();
+            for (MultipartFile file : files) {
+                Image image = new Image();
+                image.setFileName(file.getOriginalFilename());
+                image.setFileType(file.getContentType());
+                image.setImage(new SerialBlob(file.getBytes()));
+                image.setProduct(product);
+
+                String buildDownloadUrl = "/api/v1/images/image/download/";
+                String downloadUrl = buildDownloadUrl + image.getId();
+                image.setDownloadUrl(downloadUrl);
+                Image savedImage = imageRepo.save(image);
+
+                savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
+                imageRepo.save(savedImage);
+
+                ImageDto imageDto = new ImageDto();
+                imageDto.setImageId(savedImage.getId());
+                imageDto.setImageName(savedImage.getFileName());
+                imageDto.setDownloadUrl(savedImage.getDownloadUrl());
+                savedImageDtos.add(imageDto);
+            }
+            return savedImageDtos;
+        } catch (ProductNotFoundException e) {
+            throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.CREATE_IMAGE_FAIL.setReason(e.getMessage());
+            throw new ImageSaveFailedException(ResponseCode.CREATE_IMAGE_FAIL);
+        }
     }
 
     @Override
@@ -64,6 +99,7 @@ public class ImageServiceImpl implements ImageService {
         try {
             Image image = getImageById(imageId);
             image.setFileName(file.getOriginalFilename());
+            image.setFileType(file.getContentType());
             image.setImage(new SerialBlob(file.getBytes()));
             imageRepo.save(image);
         } catch (ImageNotFoundException e) {

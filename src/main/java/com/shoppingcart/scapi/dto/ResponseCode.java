@@ -24,7 +24,8 @@ public enum ResponseCode {
 
     IMAGE_NOT_FOUND("Image not found!", ""),
     DELETE_IMAGE_FAIL("Image deletion failed!", ""),
-    UPDATE_IMAGE_FAIL("Image update failed!", "");
+    UPDATE_IMAGE_FAIL("Image update failed!", ""),
+    CREATE_IMAGE_FAIL("Image creation failed!", "");
 
     private String message;
     private String reason;
