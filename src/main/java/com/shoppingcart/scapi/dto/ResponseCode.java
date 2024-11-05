@@ -14,12 +14,18 @@ public enum ResponseCode {
     LIST_PRODUCT_FAIL("Product listing failed!", ""),
     CREATE_PRODUCT_FAIL("Product creation failed!", ""),
     UPDATE_PRODUCT_FAIL("Product update failed!", ""),
+    DELETE_PRODUCT_FAIL("Product deletion failed!", ""),
 
     CATEGORY_NOT_FOUND("Category not found!", ""),
     LIST_CATEGORY_FAIL("Category listing failed!", ""),
     DELETE_CATEGORY_FAIL("Category deletion failed!", ""),
     UPDATE_CATEGORY_FAIL("Category update failed!", ""),
-    CREATE_CATEGORY_FAIL("Category creation failed!", "");
+    CREATE_CATEGORY_FAIL("Category creation failed!", ""),
+
+    IMAGE_NOT_FOUND("Image not found!", ""),
+    DELETE_IMAGE_FAIL("Image deletion failed!", ""),
+    UPDATE_IMAGE_FAIL("Image update failed!", ""),
+    CREATE_IMAGE_FAIL("Image creation failed!", "");
 
     private String message;
     private String reason;

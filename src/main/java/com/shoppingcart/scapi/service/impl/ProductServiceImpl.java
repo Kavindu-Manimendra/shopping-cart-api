@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.entity.Product;
+import com.shoppingcart.scapi.exception.ProductDeleteFailedException;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
 import com.shoppingcart.scapi.exception.ProductSaveFailedException;
@@ -63,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProductById(Long id) throws ProductNotFoundException {
+    public void deleteProductById(Long id) throws ProductNotFoundException, ProductDeleteFailedException {
         try {
             boolean isExist = productRepo.existsById(id);
             if (!isExist) {
@@ -73,6 +74,9 @@ public class ProductServiceImpl implements ProductService {
             productRepo.deleteById(id);
         } catch (ProductNotFoundException e) {
             throw new ProductNotFoundException(ResponseCode.PRODUCT_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.DELETE_PRODUCT_FAIL.setReason(e.getMessage());
+            throw new ProductDeleteFailedException(ResponseCode.DELETE_PRODUCT_FAIL);
         }
     }
 
