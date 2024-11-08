@@ -27,7 +27,8 @@ public enum ResponseCode {
     UPDATE_IMAGE_FAIL("Image update failed!", ""),
     CREATE_IMAGE_FAIL("Image creation failed!", ""),
     SAVE_IMAGES_SUCCESS("Images saved successfully!", ""),
-    UPDATE_IMAGE_SUCCESS("Image updated successfully!", "");
+    UPDATE_IMAGE_SUCCESS("Image updated successfully!", ""),
+    DELETE_IMAGE_SUCCESS("Image deletion successfully!", "");
 
     private String message;
     private String reason;

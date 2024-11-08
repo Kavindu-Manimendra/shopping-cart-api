@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ImageDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Image;
+import com.shoppingcart.scapi.exception.ImageDeleteFailedException;
 import com.shoppingcart.scapi.exception.ImageNotFoundException;
 import com.shoppingcart.scapi.exception.ImageSaveFailedException;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
@@ -65,6 +66,18 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.UPDATE_IMAGE_SUCCESS));
+    }
+
+    @DeleteMapping("/image/{imageId}/delete")
+    public ResponseEntity<APIResponseDto> deleteImage(@PathVariable Long imageId) {
+        try {
+            imageService.deleteImageById(imageId);
+        } catch (ImageNotFoundException | ImageDeleteFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.DELETE_IMAGE_SUCCESS));
     }
 }
 
