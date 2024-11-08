@@ -54,4 +54,33 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PutMapping("/image/{imageId}/update")
+    public ResponseEntity<APIResponseDto> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file) {
+        try {
+            imageService.updateImage(file, imageId);
+        } catch (ImageNotFoundException | ImageSaveFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.UPDATE_IMAGE_SUCCESS));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
