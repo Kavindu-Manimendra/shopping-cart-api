@@ -3,16 +3,19 @@ package com.shoppingcart.scapi.controllers;
 import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ImageDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
+import com.shoppingcart.scapi.entity.Image;
+import com.shoppingcart.scapi.exception.ImageNotFoundException;
 import com.shoppingcart.scapi.exception.ImageSaveFailedException;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -35,5 +38,20 @@ public class ImageController {
         }
 
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SAVE_IMAGES_SUCCESS, imageDtos));
+    }
+
+    @GetMapping("/image/download/{imageId}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) {
+        try {
+            Image image = imageService.getImageById(imageId);
+            ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));
+            return ResponseEntity.ok().contentType(MediaType.parseMediaType(image.getFileType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
+                    .body(resource);
+        } catch (ImageNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
