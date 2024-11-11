@@ -59,4 +59,18 @@ public class CategoryController {
         ResponseCode.SUCCESS.setReason("Category getting successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, category));
     }
+
+    @GetMapping("/get-by-name/{name}")
+    public ResponseEntity<APIResponseDto> getCategoryByName(@PathVariable String name) {
+        Category category = null;
+        try {
+            category = categoryService.getCategoryByName(name);
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Category getting successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, category));
+    }
 }
