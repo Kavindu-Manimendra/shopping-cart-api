@@ -30,7 +30,8 @@ public class CategoryController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.LIST_CATEGORY_SUCCESS, categories));
+        ResponseCode.SUCCESS.setReason("Category listing successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, categories));
     }
 
     @PostMapping("/add")
@@ -43,7 +44,8 @@ public class CategoryController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.CREATE_CATEGORY_SUCCESS, savedCategory));
+        ResponseCode.SUCCESS.setReason("Category creation successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, savedCategory));
     }
 
     @GetMapping("/get/{id}")
