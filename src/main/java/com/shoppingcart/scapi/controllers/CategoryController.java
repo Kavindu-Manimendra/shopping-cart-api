@@ -3,6 +3,7 @@ package com.shoppingcart.scapi.controllers;
 import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.exception.CategoryNotFoundException;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
 import com.shoppingcart.scapi.exception.CategorySaveFailedException;
 import com.shoppingcart.scapi.service.CategoryService;
@@ -43,5 +44,19 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.CREATE_CATEGORY_SUCCESS, savedCategory));
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<APIResponseDto> getCategoryById(@PathVariable Long id) {
+        Category category = null;
+        try {
+            category = categoryService.getCategoryById(id);
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Category getting successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, category));
     }
 }
