@@ -21,6 +21,7 @@ public enum ResponseCode {
     LIST_CATEGORY_FAIL("Category listing failed!", ""),
     DELETE_CATEGORY_FAIL("Category deletion failed!", ""),
     UPDATE_CATEGORY_FAIL("Category update failed!", ""),
+    CREATE_CATEGORY_SUCCESS("Category creation successful!", ""),
     CREATE_CATEGORY_FAIL("Category creation failed!", ""),
 
     IMAGE_NOT_FOUND("Image not found!", ""),

@@ -4,13 +4,12 @@ import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
+import com.shoppingcart.scapi.exception.CategorySaveFailedException;
 import com.shoppingcart.scapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,18 @@ public class CategoryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.LIST_CATEGORY_SUCCESS, categories));
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<APIResponseDto> addCategory(@RequestBody Category category) {
+        Category savedCategory = null;
+        try {
+            savedCategory = categoryService.addCategory(category);
+        } catch (CategorySaveFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.CREATE_CATEGORY_SUCCESS, savedCategory));
     }
 }
