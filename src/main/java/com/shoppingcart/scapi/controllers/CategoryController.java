@@ -3,6 +3,7 @@ package com.shoppingcart.scapi.controllers;
 import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.exception.CategoryDeleteFailedException;
 import com.shoppingcart.scapi.exception.CategoryNotFoundException;
 import com.shoppingcart.scapi.exception.CategoryRetrivedFailedException;
 import com.shoppingcart.scapi.exception.CategorySaveFailedException;
@@ -75,4 +76,19 @@ public class CategoryController {
         ResponseCode.SUCCESS.setReason("Category getting successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, category));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<APIResponseDto> deleteCategory(@PathVariable Long id) {
+        try {
+            categoryService.deleteCategoryById(id);
+        } catch (CategoryNotFoundException | CategoryDeleteFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Category deletion successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
+    }
+
+
 }
