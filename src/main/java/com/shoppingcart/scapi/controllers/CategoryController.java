@@ -90,5 +90,17 @@ public class CategoryController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
 
-
+    @PutMapping("/update/{id}")
+    public ResponseEntity<APIResponseDto> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+        Category savedCategory = null;
+        try {
+            savedCategory = categoryService.updateCategory(category, id);
+        } catch (CategoryNotFoundException | CategorySaveFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Category update successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, savedCategory));
+    }
 }
