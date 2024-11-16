@@ -1,18 +1,17 @@
 package com.shoppingcart.scapi.controllers;
 
 import com.shoppingcart.scapi.dto.APIResponseDto;
+import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
+import com.shoppingcart.scapi.exception.ProductSaveFailedException;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,5 +48,19 @@ public class ProductController {
         }
         ResponseCode.SUCCESS.setReason("Product getting successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, product));
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<APIResponseDto> addProduct(@RequestBody ProductRequestDto product) {
+        Product savedProduct = null;
+        try {
+            savedProduct = productService.addProduct(product);
+        } catch (ProductSaveFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Product added successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, savedProduct));
     }
 }
