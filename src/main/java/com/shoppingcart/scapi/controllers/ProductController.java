@@ -105,4 +105,19 @@ public class ProductController {
         ResponseCode.SUCCESS.setReason("Product listing successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
     }
+
+    @GetMapping("/get/{category}/{brand}")
+    public ResponseEntity<APIResponseDto> getProductsByCategoryAndBrand(@PathVariable String category, @PathVariable String brand) {
+        List<Product> products = null;
+        try {
+            products = productService.getProductsByCategoryAndBrand(category, brand);
+        } catch (ProductRetrivedFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Product listing successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
+    }
+
 }
