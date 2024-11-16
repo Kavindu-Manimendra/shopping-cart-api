@@ -63,4 +63,18 @@ public class ProductController {
         ResponseCode.SUCCESS.setReason("Product added successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, savedProduct));
     }
+
+    @PutMapping("/update/{productId}")
+    public ResponseEntity<APIResponseDto> updateProduct(@RequestBody ProductRequestDto product, @PathVariable("productId") Long id) {
+        Product updatedProduct = null;
+        try {
+            updatedProduct = productService.updateProduct(product, id);
+        } catch (ProductNotFoundException | ProductSaveFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Product updated successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, updatedProduct));
+    }
 }
