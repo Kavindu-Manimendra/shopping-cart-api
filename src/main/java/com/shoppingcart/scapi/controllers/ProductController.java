@@ -91,4 +91,18 @@ public class ProductController {
         ResponseCode.SUCCESS.setReason("Product deleted successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
+
+    @GetMapping("/get/{brandName}/{productName}")
+    public ResponseEntity<APIResponseDto> getProductsByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
+        List<Product> products = null;
+        try {
+            products = productService.getProductsByBrandAndName(brandName, productName);
+        } catch (ProductRetrivedFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Product listing successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
+    }
 }
