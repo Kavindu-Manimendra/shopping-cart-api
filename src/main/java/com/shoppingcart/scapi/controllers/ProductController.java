@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Product;
+import com.shoppingcart.scapi.exception.ProductDeleteFailedException;
 import com.shoppingcart.scapi.exception.ProductNotFoundException;
 import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
 import com.shoppingcart.scapi.exception.ProductSaveFailedException;
@@ -76,5 +77,18 @@ public class ProductController {
         }
         ResponseCode.SUCCESS.setReason("Product updated successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, updatedProduct));
+    }
+
+    @DeleteMapping("/delete/{productId}")
+    public ResponseEntity<APIResponseDto> deleteProduct(@PathVariable("productId") Long id) {
+        try {
+            productService.deleteProductById(id);
+        } catch (ProductNotFoundException | ProductDeleteFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Product deleted successful!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
 }
