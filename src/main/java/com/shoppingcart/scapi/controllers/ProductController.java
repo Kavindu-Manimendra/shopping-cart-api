@@ -161,4 +161,18 @@ public class ProductController {
         ResponseCode.SUCCESS.setReason("Product listing successful!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
     }
+
+    @GetMapping("get-count-brand-name")
+    public ResponseEntity<APIResponseDto> getCountOfProductsByBrandName(@RequestParam String brand, @RequestParam String name) {
+        Long count = null;
+        try {
+            count = productService.countProductsByBrandAndName(brand, name);
+        } catch (ProductRetrivedFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Get Product count success!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, count));
+    }
 }
