@@ -92,8 +92,8 @@ public class ProductController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
 
-    @GetMapping("/get/{brandName}/{productName}")
-    public ResponseEntity<APIResponseDto> getProductsByBrandAndName(@PathVariable String brandName, @PathVariable String productName) {
+    @GetMapping("/get-by-brand-name")
+    public ResponseEntity<APIResponseDto> getProductsByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
         List<Product> products = null;
         try {
             products = productService.getProductsByBrandAndName(brandName, productName);
@@ -106,8 +106,8 @@ public class ProductController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
     }
 
-    @GetMapping("/get/{category}/{brand}")
-    public ResponseEntity<APIResponseDto> getProductsByCategoryAndBrand(@PathVariable String category, @PathVariable String brand) {
+    @GetMapping("/get-by-category-brand")
+    public ResponseEntity<APIResponseDto> getProductsByCategoryAndBrand(@RequestParam String category, @RequestParam String brand) {
         List<Product> products = null;
         try {
             products = productService.getProductsByCategoryAndBrand(category, brand);
