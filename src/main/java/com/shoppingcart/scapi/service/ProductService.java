@@ -19,5 +19,6 @@ public interface ProductService {
     List<Product> getProductsByName(String name) throws ProductRetrivedFailedException;
     List<Product> getProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
     Long countProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
+    List<ProductDto> getConvertedProducts(List<Product> products) throws ConvertToDtoFailedException;
     ProductDto convertToDto(Product product) throws ConvertToDtoFailedException;
 }

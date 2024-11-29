@@ -185,6 +185,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) throws ConvertToDtoFailedException {
+        List<ProductDto> productDtoList = null;
+        try {
+            for (Product p : products) {
+                productDtoList.add(convertToDto(p));
+            }
+            return productDtoList;
+        } catch (ConvertToDtoFailedException e) {
+            throw new ConvertToDtoFailedException(ResponseCode.CONVERT_TO_DTO_FAIL);
+        } catch (Exception e) {
+            ResponseCode.CONVERT_TO_PRODUCT_DTO_LIST_FAIL.setReason("Convert to productDto list failed. " + e.getMessage());
+            throw new ConvertToDtoFailedException(ResponseCode.CONVERT_TO_PRODUCT_DTO_LIST_FAIL);
+        }
+    }
+
+    @Override
     public ProductDto convertToDto(Product product) throws ConvertToDtoFailedException {
         try {
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
