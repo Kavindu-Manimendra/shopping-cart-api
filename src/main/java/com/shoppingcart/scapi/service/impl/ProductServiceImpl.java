@@ -1,17 +1,19 @@
 package com.shoppingcart.scapi.service.impl;
 
+import com.shoppingcart.scapi.dto.ImageDto;
+import com.shoppingcart.scapi.dto.ProductDto;
 import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Category;
+import com.shoppingcart.scapi.entity.Image;
 import com.shoppingcart.scapi.entity.Product;
-import com.shoppingcart.scapi.exception.ProductDeleteFailedException;
-import com.shoppingcart.scapi.exception.ProductNotFoundException;
-import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
-import com.shoppingcart.scapi.exception.ProductSaveFailedException;
+import com.shoppingcart.scapi.exception.*;
 import com.shoppingcart.scapi.repo.CategoryRepo;
+import com.shoppingcart.scapi.repo.ImageRepo;
 import com.shoppingcart.scapi.repo.ProductRepo;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
+    private final ModelMapper modelMapper;
+    private final ImageRepo imageRepo;
 
     @Override
     public Product addProduct(ProductRequestDto request) throws ProductSaveFailedException {
@@ -177,6 +181,20 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e) {
             ResponseCode.LIST_PRODUCT_FAIL.setReason("Get count by using brand and name failed. " + e.getMessage());
             throw new ProductRetrivedFailedException(ResponseCode.LIST_PRODUCT_FAIL);
+        }
+    }
+
+    @Override
+    public ProductDto convertToDto(Product product) throws ConvertToDtoFailedException {
+        try {
+            ProductDto productDto = modelMapper.map(product, ProductDto.class);
+            List<Image> images = imageRepo.findByProductId(product.getId());
+            List<ImageDto> imageDtos = images.stream().map(image -> modelMapper.map(image, ImageDto.class)).toList();
+            productDto.setImages(imageDtos);
+            return productDto;
+        } catch (Exception e) {
+            ResponseCode.CONVERT_TO_DTO_FAIL.setReason("Product convert to DTO failed. " + e.getMessage());
+            throw new ConvertToDtoFailedException(ResponseCode.CONVERT_TO_DTO_FAIL);
         }
     }
 }

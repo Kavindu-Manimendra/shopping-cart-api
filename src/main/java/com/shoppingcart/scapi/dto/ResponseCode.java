@@ -28,7 +28,9 @@ public enum ResponseCode {
     CREATE_IMAGE_FAIL("Image creation failed!", ""),
     SAVE_IMAGES_SUCCESS("Images saved successfully!", ""),
     UPDATE_IMAGE_SUCCESS("Image updated successfully!", ""),
-    DELETE_IMAGE_SUCCESS("Image deletion successfully!", "");
+    DELETE_IMAGE_SUCCESS("Image deletion successfully!", ""),
+
+    CONVERT_TO_DTO_FAIL("Convert to DTO failed!", "");
 
     private String message;
     private String reason;

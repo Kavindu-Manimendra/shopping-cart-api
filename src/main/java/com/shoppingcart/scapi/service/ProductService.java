@@ -1,11 +1,9 @@
 package com.shoppingcart.scapi.service;
 
+import com.shoppingcart.scapi.dto.ProductDto;
 import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.entity.Product;
-import com.shoppingcart.scapi.exception.ProductDeleteFailedException;
-import com.shoppingcart.scapi.exception.ProductNotFoundException;
-import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
-import com.shoppingcart.scapi.exception.ProductSaveFailedException;
+import com.shoppingcart.scapi.exception.*;
 
 import java.util.List;
 
@@ -21,4 +19,5 @@ public interface ProductService {
     List<Product> getProductsByName(String name) throws ProductRetrivedFailedException;
     List<Product> getProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
     Long countProductsByBrandAndName(String brand, String name) throws ProductRetrivedFailedException;
+    ProductDto convertToDto(Product product) throws ConvertToDtoFailedException;
 }
