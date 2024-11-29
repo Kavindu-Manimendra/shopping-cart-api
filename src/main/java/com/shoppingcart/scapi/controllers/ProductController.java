@@ -1,13 +1,11 @@
 package com.shoppingcart.scapi.controllers;
 
 import com.shoppingcart.scapi.dto.APIResponseDto;
+import com.shoppingcart.scapi.dto.ProductDto;
 import com.shoppingcart.scapi.dto.ProductRequestDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Product;
-import com.shoppingcart.scapi.exception.ProductDeleteFailedException;
-import com.shoppingcart.scapi.exception.ProductNotFoundException;
-import com.shoppingcart.scapi.exception.ProductRetrivedFailedException;
-import com.shoppingcart.scapi.exception.ProductSaveFailedException;
+import com.shoppingcart.scapi.exception.*;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,30 +23,34 @@ public class ProductController {
     @GetMapping("/all")
     public ResponseEntity<APIResponseDto> getAllProducts() {
         List<Product> products = null;
+        List<ProductDto> productDtoList = null;
         try {
             products = productService.getAllProducts();
-        } catch (ProductRetrivedFailedException e) {
+            productDtoList = productService.getConvertedProducts(products);
+        } catch (ProductRetrivedFailedException | ConvertToDtoFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Product listing successful!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, productDtoList));
     }
 
     // @PathVariable("productId") Long id, productId will be equal to id
     @GetMapping("/{productId}")
     public ResponseEntity<APIResponseDto> getProductById(@PathVariable("productId") Long id) {
         Product product = null;
+        ProductDto productDto = null;
         try {
             product = productService.getProductById(id);
-        } catch (ProductNotFoundException e) {
+            productDto = productService.convertToDto(product);
+        } catch (ProductNotFoundException | ConvertToDtoFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Product getting successful!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, product));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, productDto));
     }
 
     @PostMapping("/add")
@@ -95,15 +97,17 @@ public class ProductController {
     @GetMapping("/get-by-brand-name")
     public ResponseEntity<APIResponseDto> getProductsByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
         List<Product> products = null;
+        List<ProductDto> productDtos = null;
         try {
             products = productService.getProductsByBrandAndName(brandName, productName);
-        } catch (ProductRetrivedFailedException e) {
+            productDtos = productService.getConvertedProducts(products);
+        } catch (ProductRetrivedFailedException | ConvertToDtoFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Product listing successful!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, products));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, productDtos));
     }
 
     @GetMapping("/get-by-category-brand")
