@@ -2,7 +2,9 @@ package com.shoppingcart.scapi.service.impl;
 
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
+import com.shoppingcart.scapi.entity.CartItem;
 import com.shoppingcart.scapi.exception.CartClearFailedException;
+import com.shoppingcart.scapi.exception.CartGetTotalFailedException;
 import com.shoppingcart.scapi.exception.CartNotFoundException;
 import com.shoppingcart.scapi.exception.CartSaveFailedException;
 import com.shoppingcart.scapi.repo.CartItemRepo;
@@ -55,7 +57,14 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public BigDecimal getTotalPrice(Long id) {
-        return null;
+    public BigDecimal getTotalPrice(Long id) throws CartGetTotalFailedException {
+        try {
+            Cart cart = getCart(id);
+            return cart.getTotalAmount();
+        } catch (Exception e) {
+            ResponseCode.CART_GET_TOTAL_FAIL.setReason(e.getMessage());
+            throw new CartGetTotalFailedException(ResponseCode.CART_GET_TOTAL_FAIL);
+        }
+
     }
 }
