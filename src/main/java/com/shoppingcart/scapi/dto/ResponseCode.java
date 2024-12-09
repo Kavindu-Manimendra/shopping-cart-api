@@ -34,7 +34,8 @@ public enum ResponseCode {
     CONVERT_TO_DTO_FAIL("Convert to DTO failed!", ""),
 
     CART_NOT_FOUND("Cart not found!", ""),
-    CART_SAVE_FAIL("Cart save failed!", "");
+    CART_SAVE_FAIL("Cart save failed!", ""),
+    CART_CLEAR_FAIL("Cart clear failed!", "");
 
     private String message;
     private String reason;

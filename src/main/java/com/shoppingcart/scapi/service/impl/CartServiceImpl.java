@@ -2,8 +2,10 @@ package com.shoppingcart.scapi.service.impl;
 
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
+import com.shoppingcart.scapi.exception.CartClearFailedException;
 import com.shoppingcart.scapi.exception.CartNotFoundException;
 import com.shoppingcart.scapi.exception.CartSaveFailedException;
+import com.shoppingcart.scapi.repo.CartItemRepo;
 import com.shoppingcart.scapi.repo.CartRepo;
 import com.shoppingcart.scapi.service.CartService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartRepo cartRepo;
+    private final CartItemRepo cartItemRepo;
 
     @Override
     public Cart getCart(Long id) throws CartNotFoundException, CartSaveFailedException {
@@ -38,8 +41,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void clearCart(Long id) {
-
+    public void clearCart(Long id) throws CartClearFailedException {
+        Cart cart = null;
+        try {
+            cart = getCart(id);
+            cartItemRepo.deleteAllByCartId(id);
+            cart.getItems().clear();
+            cartRepo.deleteById(id);
+        } catch (Exception e) {
+            ResponseCode.CART_CLEAR_FAIL.setReason(e.getMessage());
+            throw new CartClearFailedException(ResponseCode.CART_CLEAR_FAIL);
+        }
     }
 
     @Override
