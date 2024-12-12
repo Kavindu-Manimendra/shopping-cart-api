@@ -4,6 +4,8 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
 import com.shoppingcart.scapi.entity.CartItem;
 import com.shoppingcart.scapi.entity.Product;
+import com.shoppingcart.scapi.exception.CartItemNotFoundException;
+import com.shoppingcart.scapi.exception.CartItemRemoveFailedException;
 import com.shoppingcart.scapi.exception.CartItemSaveFailedException;
 import com.shoppingcart.scapi.repo.CartItemRepo;
 import com.shoppingcart.scapi.repo.CartRepo;
@@ -51,8 +53,21 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void removeItemFromCart(Long cartId, Long productId) {
-
+    public void removeItemFromCart(Long cartId, Long productId) throws CartItemNotFoundException, CartItemRemoveFailedException {
+        try {
+            Cart cart = cartService.getCart(cartId);
+            CartItem itemToRemove = cart.getItems()
+                    .stream()
+                    .filter(item -> item.getProduct().getId().equals(productId))
+                    .findFirst().orElseThrow(() -> new CartItemNotFoundException(ResponseCode.CART_ITEM_NOT_FOUND));
+            cart.removeItem(itemToRemove);
+            cartRepo.save(cart);
+        } catch (CartItemNotFoundException e) {
+            throw new CartItemNotFoundException(ResponseCode.CART_ITEM_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.REMOVE_CART_ITEM_FAIL.setReason(e.getMessage());
+            throw new CartItemRemoveFailedException(ResponseCode.REMOVE_CART_ITEM_FAIL);
+        }
     }
 
     @Override
