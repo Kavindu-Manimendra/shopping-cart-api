@@ -7,6 +7,7 @@ import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.exception.CartItemNotFoundException;
 import com.shoppingcart.scapi.exception.CartItemRemoveFailedException;
 import com.shoppingcart.scapi.exception.CartItemSaveFailedException;
+import com.shoppingcart.scapi.exception.CartItemUpdateFailedException;
 import com.shoppingcart.scapi.repo.CartItemRepo;
 import com.shoppingcart.scapi.repo.CartRepo;
 import com.shoppingcart.scapi.service.CartItemService;
@@ -14,6 +15,8 @@ import com.shoppingcart.scapi.service.CartService;
 import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +74,24 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void updateItemQuantity(Long cartId, Long productId, int quantity) {
-
+    public void updateItemQuantity(Long cartId, Long productId, int quantity) throws CartItemUpdateFailedException {
+        try {
+            Cart cart = cartService.getCart(cartId);
+            cart.getItems()
+                    .stream()
+                    .filter(item -> item.getProduct().getId().equals(productId))
+                    .findFirst()
+                    .ifPresent(item -> {
+                        item.setQuantity(quantity);
+                        item.setUnitPrice(item.getProduct().getPrice());
+                        item.setTotalPrice();
+                    });
+            BigDecimal totalAmount = cart.getTotalAmount();
+            cart.setTotalAmount(totalAmount);
+            cartRepo.save(cart);
+        } catch (Exception e) {
+            ResponseCode.UPDATE_ITEM_QUANTITY_FAIL.setReason(e.getMessage());
+            throw new CartItemUpdateFailedException(ResponseCode.UPDATE_ITEM_QUANTITY_FAIL);
+        }
     }
 }
