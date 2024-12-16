@@ -56,10 +56,7 @@ public class CartItemServiceImpl implements CartItemService {
     public void removeItemFromCart(Long cartId, Long productId) throws CartItemNotFoundException, CartItemRemoveFailedException {
         try {
             Cart cart = cartService.getCart(cartId);
-            CartItem itemToRemove = cart.getItems()
-                    .stream()
-                    .filter(item -> item.getProduct().getId().equals(productId))
-                    .findFirst().orElseThrow(() -> new CartItemNotFoundException(ResponseCode.CART_ITEM_NOT_FOUND));
+            CartItem itemToRemove = getCartItem(cartId, productId);
             cart.removeItem(itemToRemove);
             cartRepo.save(cart);
         } catch (CartItemNotFoundException e) {
@@ -92,6 +89,7 @@ public class CartItemServiceImpl implements CartItemService {
         }
     }
 
+    @Override
     public CartItem getCartItem(Long cartId, Long productId) throws CartItemNotFoundException, CartNotFoundException {
         Cart cart = null;
         try {
