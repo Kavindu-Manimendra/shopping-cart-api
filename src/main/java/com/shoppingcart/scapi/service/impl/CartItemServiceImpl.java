@@ -4,10 +4,7 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
 import com.shoppingcart.scapi.entity.CartItem;
 import com.shoppingcart.scapi.entity.Product;
-import com.shoppingcart.scapi.exception.CartItemNotFoundException;
-import com.shoppingcart.scapi.exception.CartItemRemoveFailedException;
-import com.shoppingcart.scapi.exception.CartItemSaveFailedException;
-import com.shoppingcart.scapi.exception.CartItemUpdateFailedException;
+import com.shoppingcart.scapi.exception.*;
 import com.shoppingcart.scapi.repo.CartItemRepo;
 import com.shoppingcart.scapi.repo.CartRepo;
 import com.shoppingcart.scapi.service.CartItemService;
@@ -92,6 +89,23 @@ public class CartItemServiceImpl implements CartItemService {
         } catch (Exception e) {
             ResponseCode.UPDATE_ITEM_QUANTITY_FAIL.setReason(e.getMessage());
             throw new CartItemUpdateFailedException(ResponseCode.UPDATE_ITEM_QUANTITY_FAIL);
+        }
+    }
+
+    public CartItem getCartItem(Long cartId, Long productId) throws CartItemNotFoundException, CartNotFoundException {
+        Cart cart = null;
+        try {
+            cart = cartService.getCart(cartId);
+            return cart.getItems()
+                    .stream()
+                    .filter(item -> item.getProduct().getId().equals(productId))
+                    .findFirst().orElseThrow(() -> new CartItemNotFoundException(ResponseCode.CART_ITEM_NOT_FOUND));
+        } catch (CartNotFoundException | CartSaveFailedException e) {
+            ResponseCode.CART_NOT_FOUND.setReason(e.getMessage());
+            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.CART_ITEM_NOT_FOUND.setReason(e.getMessage());
+            throw new CartItemNotFoundException(ResponseCode.CART_ITEM_NOT_FOUND);
         }
     }
 }
