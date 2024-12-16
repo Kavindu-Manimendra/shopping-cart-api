@@ -36,7 +36,12 @@ public enum ResponseCode {
     CART_NOT_FOUND("Cart not found!", ""),
     CART_SAVE_FAIL("Cart save failed!", ""),
     CART_CLEAR_FAIL("Cart clear failed!", ""),
-    CART_GET_TOTAL_FAIL("Cart get total failed!", "");
+    CART_GET_TOTAL_FAIL("Cart get total failed!", ""),
+
+    ADD_ITEM_TO_CART_FAIL("Add item to Cart failed!", ""),
+    CART_ITEM_NOT_FOUND("Cart item not found!", ""),
+    REMOVE_CART_ITEM_FAIL("Remove cart item failed!", ""),
+    UPDATE_ITEM_QUANTITY_FAIL("Update item quantity failed!", "");
 
     private String message;
     private String reason;
