@@ -5,6 +5,7 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.exception.CartItemNotFoundException;
 import com.shoppingcart.scapi.exception.CartItemRemoveFailedException;
 import com.shoppingcart.scapi.exception.CartItemSaveFailedException;
+import com.shoppingcart.scapi.exception.CartItemUpdateFailedException;
 import com.shoppingcart.scapi.service.CartItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,4 +44,19 @@ public class CartItemController {
         ResponseCode.SUCCESS.setReason("Cart item removed from cart successfully!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
+
+    @PutMapping("/cart/{cartId}/item/{itemId}/update")
+    public ResponseEntity<APIResponseDto> updateItemQuantity(@PathVariable Long cartId, @PathVariable Long itemId,
+                                                             @RequestParam Integer quantity) {
+        try {
+            cartItemService.updateItemQuantity(cartId, itemId, quantity);
+        } catch (CartItemUpdateFailedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Cart item updated from cart successfully!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
+    }
+
 }
