@@ -14,14 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
     private final CartRepo cartRepo;
     private final CartItemRepo cartItemRepo;
-    private final AtomicLong cartIdGenerator = new AtomicLong(0);
 
     @Override
     public Cart getCart(Long id) throws CartNotFoundException, CartSaveFailedException {
@@ -67,12 +65,6 @@ public class CartServiceImpl implements CartService {
             ResponseCode.CART_GET_TOTAL_FAIL.setReason(e.getMessage());
             throw new CartGetTotalFailedException(ResponseCode.CART_GET_TOTAL_FAIL);
         }
-    }
 
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        Long newCartId = cartIdGenerator.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepo.save(newCart).getId();
     }
 }
