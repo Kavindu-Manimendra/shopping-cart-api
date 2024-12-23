@@ -12,4 +12,5 @@ public interface CartService {
     Cart getCart(Long id) throws CartNotFoundException, CartSaveFailedException;
     void clearCart(Long id) throws CartClearFailedException;
     BigDecimal getTotalPrice(Long id) throws CartGetTotalFailedException;
+    Long initializeNewCart();
 }

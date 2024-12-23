@@ -7,6 +7,7 @@ import com.shoppingcart.scapi.exception.CartItemRemoveFailedException;
 import com.shoppingcart.scapi.exception.CartItemSaveFailedException;
 import com.shoppingcart.scapi.exception.CartItemUpdateFailedException;
 import com.shoppingcart.scapi.service.CartItemService;
+import com.shoppingcart.scapi.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("${api.prefix}/cartItems")
 public class CartItemController {
     private final CartItemService cartItemService;
+    private final CartService cartService;
 
     @PostMapping("/item/add")
-    public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam Long cartId, @RequestParam Long productId,
+    public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam(required = false) Long cartId, @RequestParam Long productId,
                                                         @RequestParam Integer quantity) {
         try {
+            if (cartId == null) {
+                cartId = cartService.initializeNewCart();
+            }
             cartItemService.addItemToCart(cartId, productId, quantity);
         } catch (CartItemSaveFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
