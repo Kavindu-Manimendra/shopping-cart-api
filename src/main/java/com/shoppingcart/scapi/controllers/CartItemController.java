@@ -21,7 +21,7 @@ public class CartItemController {
     private final CartService cartService;
 
     @PostMapping("/item/add")
-    public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam Long cartId, @RequestParam Long productId,
+    public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam(required = false) Long cartId, @RequestParam Long productId,
                                                         @RequestParam Integer quantity) {
         try {
             if (cartId == null) {
