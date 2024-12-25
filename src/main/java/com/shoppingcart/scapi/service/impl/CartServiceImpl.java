@@ -11,6 +11,7 @@ import com.shoppingcart.scapi.repo.CartRepo;
 import com.shoppingcart.scapi.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,6 +44,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Transactional
     @Override
     public void clearCart(Long id) throws CartClearFailedException {
         Cart cart = null;
