@@ -2,11 +2,15 @@ package com.shoppingcart.scapi.service.impl;
 
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Order;
+import com.shoppingcart.scapi.entity.OrderItem;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
 import com.shoppingcart.scapi.repo.OrderRepo;
 import com.shoppingcart.scapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +20,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(Long userId) {
         return null;
+    }
+
+    private BigDecimal calculateTotalAmount(List<OrderItem> orderItemList) {
+        return orderItemList
+                .stream()
+                .map(item -> item.getPrice()
+                        .multiply(new BigDecimal(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
