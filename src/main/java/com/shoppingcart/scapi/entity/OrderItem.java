@@ -26,10 +26,10 @@ public class OrderItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public OrderItem(Product product, Order order, BigDecimal price, int quantity) {
-        this.product = product;
+    public OrderItem(Order order, Product product, int quantity, BigDecimal price) {
         this.order = order;
-        this.price = price;
+        this.product = product;
         this.quantity = quantity;
+        this.price = price;
     }
 }
