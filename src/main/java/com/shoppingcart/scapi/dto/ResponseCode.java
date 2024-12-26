@@ -41,7 +41,9 @@ public enum ResponseCode {
     ADD_ITEM_TO_CART_FAIL("Add item to Cart failed!", ""),
     CART_ITEM_NOT_FOUND("Cart item not found!", ""),
     REMOVE_CART_ITEM_FAIL("Remove cart item failed!", ""),
-    UPDATE_ITEM_QUANTITY_FAIL("Update item quantity failed!", "");
+    UPDATE_ITEM_QUANTITY_FAIL("Update item quantity failed!", ""),
+
+    ORDER_NOT_FOUND("Order not found!", "");
 
     private String message;
     private String reason;
