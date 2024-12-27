@@ -30,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 
     private Order createOrder(Cart cart) {
         Order order = new Order();
-        // Set the user...
+        order.setUser(cart.getUser());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderedDate(LocalDate.now());
         return order;
