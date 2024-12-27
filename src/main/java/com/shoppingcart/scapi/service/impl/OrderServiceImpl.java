@@ -5,6 +5,7 @@ import com.shoppingcart.scapi.entity.Cart;
 import com.shoppingcart.scapi.entity.Order;
 import com.shoppingcart.scapi.entity.OrderItem;
 import com.shoppingcart.scapi.entity.Product;
+import com.shoppingcart.scapi.enums.OrderStatus;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
 import com.shoppingcart.scapi.repo.OrderRepo;
 import com.shoppingcart.scapi.repo.ProductRepo;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,6 +26,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order placeOrder(Long userId) {
         return null;
+    }
+
+    private Order createOrder(Cart cart) {
+        Order order = new Order();
+        // Set the user...
+        order.setOrderStatus(OrderStatus.PENDING);
+        order.setOrderedDate(LocalDate.now());
+        return order;
     }
 
     private List<OrderItem> createOrderItems(Order order, Cart cart) {
