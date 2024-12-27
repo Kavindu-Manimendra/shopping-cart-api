@@ -6,15 +6,20 @@ import com.shoppingcart.scapi.entity.Order;
 import com.shoppingcart.scapi.entity.OrderItem;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.enums.OrderStatus;
+import com.shoppingcart.scapi.exception.CartClearFailedException;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
+import com.shoppingcart.scapi.exception.PlaceOrderFailedException;
 import com.shoppingcart.scapi.repo.OrderRepo;
 import com.shoppingcart.scapi.repo.ProductRepo;
+import com.shoppingcart.scapi.service.CartService;
 import com.shoppingcart.scapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -22,10 +27,30 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
+    private final CartService cartService;
 
+    @Transactional
     @Override
-    public Order placeOrder(Long userId) {
-        return null;
+    public Order placeOrder(Long userId) throws PlaceOrderFailedException {
+        try {
+            Cart cart = cartService.getCartByUserId(userId);
+
+            Order order = createOrder(cart);
+            List<OrderItem> orderItemList = createOrderItems(order, cart);
+
+            order.setOrderItems(new HashSet<>(orderItemList));
+            order.setTotalAmount(calculateTotalAmount(orderItemList));
+
+            Order savedOrder = orderRepo.save(order);
+            cartService.clearCart(cart.getId());
+
+            return savedOrder;
+        } catch (CartClearFailedException e) {
+            throw new PlaceOrderFailedException(ResponseCode.CART_CLEAR_FAIL);
+        } catch (Exception e) {
+            ResponseCode.PLACE_ORDER_FAIL.setReason(e.getMessage());
+            throw new PlaceOrderFailedException(ResponseCode.PLACE_ORDER_FAIL);
+        }
     }
 
     private Order createOrder(Cart cart) {
