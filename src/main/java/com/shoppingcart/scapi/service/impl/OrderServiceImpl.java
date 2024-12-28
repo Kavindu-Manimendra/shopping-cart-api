@@ -99,4 +99,22 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
         }
     }
+
+    @Override
+    public List<Order> getUserOrders(Long userId) throws OrderNotFoundException {
+        List<Order> orders = null;
+        try {
+            orders = orderRepo.findByUserId(userId);
+            if (orders == null) {
+                ResponseCode.ORDER_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
+                throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+            }
+            return orders;
+        } catch (OrderNotFoundException e) {
+            throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.ORDER_NOT_FOUND.setReason(e.getMessage());
+            throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+        }
+    }
 }
