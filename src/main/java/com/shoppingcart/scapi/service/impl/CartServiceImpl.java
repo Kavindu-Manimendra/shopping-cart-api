@@ -77,4 +77,22 @@ public class CartServiceImpl implements CartService {
         newCart.setId(newCartId);
         return cartRepo.save(newCart).getId();
     }
+
+    @Override
+    public Cart getCartByUserId(Long userId) throws CartNotFoundException {
+        Cart cart = null;
+        try {
+            cart = cartRepo.findByUserId(userId);
+            if (cart == null) {
+                ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
+                throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+            }
+            return cart;
+        } catch (CartNotFoundException e) {
+            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.CART_NOT_FOUND.setReason(e.getMessage());
+            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+        }
+    }
 }
