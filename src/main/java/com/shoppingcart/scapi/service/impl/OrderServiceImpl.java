@@ -6,15 +6,20 @@ import com.shoppingcart.scapi.entity.Order;
 import com.shoppingcart.scapi.entity.OrderItem;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.enums.OrderStatus;
+import com.shoppingcart.scapi.exception.CartClearFailedException;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
+import com.shoppingcart.scapi.exception.PlaceOrderFailedException;
 import com.shoppingcart.scapi.repo.OrderRepo;
 import com.shoppingcart.scapi.repo.ProductRepo;
+import com.shoppingcart.scapi.service.CartService;
 import com.shoppingcart.scapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -22,15 +27,35 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
+    private final CartService cartService;
 
+    @Transactional
     @Override
-    public Order placeOrder(Long userId) {
-        return null;
+    public Order placeOrder(Long userId) throws PlaceOrderFailedException {
+        try {
+            Cart cart = cartService.getCartByUserId(userId);
+
+            Order order = createOrder(cart);
+            List<OrderItem> orderItemList = createOrderItems(order, cart);
+
+            order.setOrderItems(new HashSet<>(orderItemList));
+            order.setTotalAmount(calculateTotalAmount(orderItemList));
+
+            Order savedOrder = orderRepo.save(order);
+            cartService.clearCart(cart.getId());
+
+            return savedOrder;
+        } catch (CartClearFailedException e) {
+            throw new PlaceOrderFailedException(ResponseCode.CART_CLEAR_FAIL);
+        } catch (Exception e) {
+            ResponseCode.PLACE_ORDER_FAIL.setReason(e.getMessage());
+            throw new PlaceOrderFailedException(ResponseCode.PLACE_ORDER_FAIL);
+        }
     }
 
     private Order createOrder(Cart cart) {
         Order order = new Order();
-        // Set the user...
+        order.setUser(cart.getUser());
         order.setOrderStatus(OrderStatus.PENDING);
         order.setOrderedDate(LocalDate.now());
         return order;
@@ -67,6 +92,24 @@ public class OrderServiceImpl implements OrderService {
                 throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
             }
             return order;
+        } catch (OrderNotFoundException e) {
+            throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.ORDER_NOT_FOUND.setReason(e.getMessage());
+            throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<Order> getUserOrders(Long userId) throws OrderNotFoundException {
+        List<Order> orders = null;
+        try {
+            orders = orderRepo.findByUserId(userId);
+            if (orders == null) {
+                ResponseCode.ORDER_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
+                throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
+            }
+            return orders;
         } catch (OrderNotFoundException e) {
             throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
         } catch (Exception e) {
