@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.CreateUserRequest;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.entity.User;
+import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.exception.UserUpdateFailedException;
@@ -36,8 +37,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) {
-        return null;
+    public User createUser(CreateUserRequest request) throws UserCreateFailedException {
+        try {
+            if (userRepo.existsByEmail(request.getEmail())) {
+                ResponseCode.USER_CREATE_FAIL.setReason("Email already exists in the database.");
+                throw new UserCreateFailedException(ResponseCode.USER_CREATE_FAIL);
+            }
+            User user = new User();
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
+            user.setEmail(request.getEmail());
+            user.setPassword(request.getPassword());
+
+            return userRepo.save(user);
+        } catch (UserCreateFailedException e) {
+            throw new UserCreateFailedException(ResponseCode.USER_CREATE_FAIL);
+        } catch (Exception e) {
+            ResponseCode.USER_CREATE_FAIL.setReason(e.getMessage());
+            throw new UserCreateFailedException(ResponseCode.USER_CREATE_FAIL);
+        }
     }
 
     @Override
