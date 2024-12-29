@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.CreateUserRequest;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.entity.User;
+import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.repo.UserRepo;
 import com.shoppingcart.scapi.service.UserService;
@@ -44,7 +45,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-
+    public void deleteUser(Long userId) throws UserDeleteFailedException {
+        User user = null;
+        try {
+            user = getUserById(userId);
+            userRepo.delete(user);
+        } catch (UserNotFoundException e) {
+            throw new UserDeleteFailedException(ResponseCode.USER_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.USER_DELETE_FAIL.setReason(e.getMessage());
+            throw new UserDeleteFailedException(ResponseCode.USER_DELETE_FAIL);
+        }
     }
 }

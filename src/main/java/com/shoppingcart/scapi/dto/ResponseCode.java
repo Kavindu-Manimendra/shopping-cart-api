@@ -46,7 +46,8 @@ public enum ResponseCode {
     ORDER_NOT_FOUND("Order not found!", ""),
     PLACE_ORDER_FAIL("Place order failed!", ""),
 
-    USER_NOT_FOUND("User not found!", "");
+    USER_NOT_FOUND("User not found!", ""),
+    USER_DELETE_FAIL("User delete failed!", "");
 
     private String message;
     private String reason;
