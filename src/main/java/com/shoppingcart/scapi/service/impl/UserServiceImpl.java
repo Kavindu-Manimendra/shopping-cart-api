@@ -6,6 +6,7 @@ import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
+import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 import com.shoppingcart.scapi.repo.UserRepo;
 import com.shoppingcart.scapi.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +41,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UpdateUserRequest request, Long userId) {
-        return null;
+    public User updateUser(UpdateUserRequest request, Long userId) throws UserUpdateFailedException {
+        User existingUser = null;
+        try {
+            existingUser = getUserById(userId);
+            existingUser.setFirstName(request.getFirstName());
+            existingUser.setLastName(request.getLastName());
+            return userRepo.save(existingUser);
+        } catch (UserNotFoundException e) {
+            throw new UserUpdateFailedException(ResponseCode.USER_NOT_FOUND);
+        } catch (Exception e) {
+            ResponseCode.USER_UPDATE_FAIL.setReason(e.getMessage());
+            throw new UserUpdateFailedException(ResponseCode.USER_UPDATE_FAIL);
+        }
     }
 
     @Override
