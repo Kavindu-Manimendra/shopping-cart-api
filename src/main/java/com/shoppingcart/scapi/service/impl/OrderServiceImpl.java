@@ -1,5 +1,6 @@
 package com.shoppingcart.scapi.service.impl;
 
+import com.shoppingcart.scapi.dto.OrderDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
 import com.shoppingcart.scapi.entity.Order;
@@ -14,6 +15,7 @@ import com.shoppingcart.scapi.repo.ProductRepo;
 import com.shoppingcart.scapi.service.CartService;
 import com.shoppingcart.scapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
     private final CartService cartService;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Override
@@ -83,15 +86,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrder(Long orderId) throws OrderNotFoundException {
-        Order order = null;
+    public OrderDto getOrder(Long orderId) throws OrderNotFoundException {
+        OrderDto orderDto = null;
         try {
-            order = orderRepo.findById(orderId).get();
+            Order order = orderRepo.findById(orderId).get();
             if (order == null) {
                 ResponseCode.ORDER_NOT_FOUND.setReason("Invalid ID or Order ID does not exist in the database.");
                 throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
             }
-            return order;
+            orderDto = covertToDto(order);
+            return orderDto;
         } catch (OrderNotFoundException e) {
             throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
         } catch (Exception e) {
@@ -101,15 +105,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId) throws OrderNotFoundException {
-        List<Order> orders = null;
+    public List<OrderDto> getUserOrders(Long userId) throws OrderNotFoundException {
+        List<OrderDto> orderDtos = null;
         try {
-            orders = orderRepo.findByUserId(userId);
+            List<Order> orders = orderRepo.findByUserId(userId);
             if (orders == null) {
                 ResponseCode.ORDER_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
                 throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
             }
-            return orders;
+            for (Order order : orders) {
+                orderDtos.add(covertToDto(order));
+            }
+            return orderDtos;
         } catch (OrderNotFoundException e) {
             throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
         } catch (Exception e) {
@@ -117,4 +124,9 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderNotFoundException(ResponseCode.ORDER_NOT_FOUND);
         }
     }
+
+    private OrderDto covertToDto(Order order) {
+        return modelMapper.map(order, OrderDto.class);
+    }
+
 }
