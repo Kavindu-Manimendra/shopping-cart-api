@@ -44,7 +44,12 @@ public enum ResponseCode {
     UPDATE_ITEM_QUANTITY_FAIL("Update item quantity failed!", ""),
 
     ORDER_NOT_FOUND("Order not found!", ""),
-    PLACE_ORDER_FAIL("Place order failed!", "");
+    PLACE_ORDER_FAIL("Place order failed!", ""),
+
+    USER_NOT_FOUND("User not found!", ""),
+    USER_DELETE_FAIL("User delete failed!", ""),
+    USER_UPDATE_FAIL("User update failed!", ""),
+    USER_CREATE_FAIL("User creation failed!", "");
 
     private String message;
     private String reason;
