@@ -3,9 +3,11 @@ package com.shoppingcart.scapi.controllers;
 import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.CreateUserRequest;
 import com.shoppingcart.scapi.dto.ResponseCode;
+import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
+import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 import com.shoppingcart.scapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Create user successfully!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
+    }
+
+    @PutMapping("/{userId}/update")
+    public ResponseEntity<APIResponseDto> updateUser(@RequestBody UpdateUserRequest request, @PathVariable Long userId) {
+        User user = null;
+        try {
+            user = userService.updateUser(request, userId);
+        } catch (UserUpdateFailedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Update user successfully!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
     }
 }
