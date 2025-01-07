@@ -6,6 +6,7 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.UserCreateFailedException;
+import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 import com.shoppingcart.scapi.service.UserService;
@@ -60,5 +61,18 @@ public class UserController {
         }
         ResponseCode.SUCCESS.setReason("Update user successfully!");
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
+    }
+
+    @DeleteMapping("/{userId}/delete")
+    public ResponseEntity<APIResponseDto> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+        } catch (UserDeleteFailedException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        ResponseCode.SUCCESS.setReason("Delete user successfully!");
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS));
     }
 }
