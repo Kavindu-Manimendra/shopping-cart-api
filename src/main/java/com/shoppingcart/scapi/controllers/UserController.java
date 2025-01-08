@@ -1,9 +1,6 @@
 package com.shoppingcart.scapi.controllers;
 
-import com.shoppingcart.scapi.dto.APIResponseDto;
-import com.shoppingcart.scapi.dto.CreateUserRequest;
-import com.shoppingcart.scapi.dto.ResponseCode;
-import com.shoppingcart.scapi.dto.UpdateUserRequest;
+import com.shoppingcart.scapi.dto.*;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
@@ -23,44 +20,47 @@ public class UserController {
 
     @GetMapping("/{userId}/user")
     public ResponseEntity<APIResponseDto> getUserById(@PathVariable Long userId) {
-        User user = null;
+        UserDto userDto = null;
         try {
-            user = userService.getUserById(userId);
+            User user = userService.getUserById(userId);
+            userDto = userService.convertUserToDto(user);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Get user successfully!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, userDto));
     }
 
     @PostMapping("/add")
     public ResponseEntity<APIResponseDto> createUser(@RequestBody CreateUserRequest request) {
-        User user = null;
+        UserDto userDto = null;
         try {
-            user = userService.createUser(request);
+            User user = userService.createUser(request);
+            userDto = userService.convertUserToDto(user);
         } catch (UserCreateFailedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Create user successfully!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, userDto));
     }
 
     @PutMapping("/{userId}/update")
     public ResponseEntity<APIResponseDto> updateUser(@RequestBody UpdateUserRequest request, @PathVariable Long userId) {
-        User user = null;
+        UserDto userDto = null;
         try {
-            user = userService.updateUser(request, userId);
+            User user = userService.updateUser(request, userId);
+            userDto = userService.convertUserToDto(user);
         } catch (UserUpdateFailedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Update user successfully!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, user));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, userDto));
     }
 
     @DeleteMapping("/{userId}/delete")
