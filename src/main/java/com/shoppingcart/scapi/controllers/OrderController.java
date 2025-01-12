@@ -4,6 +4,7 @@ import com.shoppingcart.scapi.dto.APIResponseDto;
 import com.shoppingcart.scapi.dto.OrderDto;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Order;
+import com.shoppingcart.scapi.exception.CartNotFoundException;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
 import com.shoppingcart.scapi.exception.PlaceOrderFailedException;
 import com.shoppingcart.scapi.service.OrderService;
@@ -25,6 +26,8 @@ public class OrderController {
         Order order = null;
         try {
             order = orderService.placeOrder(userId);
+        } catch (CartNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (PlaceOrderFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
