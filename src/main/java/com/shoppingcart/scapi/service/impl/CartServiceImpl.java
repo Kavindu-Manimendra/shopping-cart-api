@@ -2,6 +2,7 @@ package com.shoppingcart.scapi.service.impl;
 
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
+import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.CartClearFailedException;
 import com.shoppingcart.scapi.exception.CartGetTotalFailedException;
 import com.shoppingcart.scapi.exception.CartNotFoundException;
@@ -71,28 +72,39 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Long initializeNewCart() {
-        Cart newCart = new Cart();
-        Long newCartId = cartIdGenerator.incrementAndGet();
-        newCart.setId(newCartId);
-        return cartRepo.save(newCart).getId();
+    public Cart initializeNewCart(User user) throws CartSaveFailedException {
+        Cart cart = null;
+        try {
+            cart = getCartByUserId(user.getId());
+            if (cart == null) {
+                cart = new Cart();
+                cart.setUser(user);
+                return cartRepo.save(cart);
+            } else {
+                return cart;
+            }
+        } catch (Exception e) {
+            ResponseCode.CART_SAVE_FAIL.setReason(e.getMessage());
+            throw new CartSaveFailedException(ResponseCode.CART_SAVE_FAIL);
+        }
     }
 
     @Override
-    public Cart getCartByUserId(Long userId) throws CartNotFoundException {
-        Cart cart = null;
-        try {
-            cart = cartRepo.findByUserId(userId);
-            if (cart == null) {
-                ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
-                throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
-            }
-            return cart;
-        } catch (CartNotFoundException e) {
-            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
-        } catch (Exception e) {
-            ResponseCode.CART_NOT_FOUND.setReason(e.getMessage());
-            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
-        }
+    public Cart getCartByUserId(Long userId){
+        return cartRepo.findByUserId(userId);
+//        Cart cart = null;
+//        try {
+//            cart = cartRepo.findByUserId(userId);
+//            if (cart == null) {
+//                ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
+//                throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+//            }
+//            return cart;
+//        } catch (CartNotFoundException e) {
+//            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+//        } catch (Exception e) {
+//            ResponseCode.CART_NOT_FOUND.setReason(e.getMessage());
+//            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+//        }
     }
 }

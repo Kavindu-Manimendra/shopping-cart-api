@@ -1,6 +1,7 @@
 package com.shoppingcart.scapi.service;
 
 import com.shoppingcart.scapi.entity.Cart;
+import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.CartClearFailedException;
 import com.shoppingcart.scapi.exception.CartGetTotalFailedException;
 import com.shoppingcart.scapi.exception.CartNotFoundException;
@@ -12,6 +13,6 @@ public interface CartService {
     Cart getCart(Long id) throws CartNotFoundException, CartSaveFailedException;
     void clearCart(Long id) throws CartClearFailedException;
     BigDecimal getTotalPrice(Long id) throws CartGetTotalFailedException;
-    Long initializeNewCart();
-    Cart getCartByUserId(Long userId) throws CartNotFoundException;
+    Cart initializeNewCart(User user) throws CartSaveFailedException;
+    Cart getCartByUserId(Long userId);
 }

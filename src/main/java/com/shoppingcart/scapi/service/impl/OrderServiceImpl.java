@@ -8,6 +8,7 @@ import com.shoppingcart.scapi.entity.OrderItem;
 import com.shoppingcart.scapi.entity.Product;
 import com.shoppingcart.scapi.enums.OrderStatus;
 import com.shoppingcart.scapi.exception.CartClearFailedException;
+import com.shoppingcart.scapi.exception.CartNotFoundException;
 import com.shoppingcart.scapi.exception.OrderNotFoundException;
 import com.shoppingcart.scapi.exception.PlaceOrderFailedException;
 import com.shoppingcart.scapi.repo.OrderRepo;
@@ -34,9 +35,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public Order placeOrder(Long userId) throws PlaceOrderFailedException {
+    public Order placeOrder(Long userId) throws CartNotFoundException, PlaceOrderFailedException {
         try {
             Cart cart = cartService.getCartByUserId(userId);
+            if (cart == null) {
+                ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or User ID does not exist in the database.");
+                throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
+            }
 
             Order order = createOrder(cart);
             List<OrderItem> orderItemList = createOrderItems(order, cart);
@@ -48,6 +53,8 @@ public class OrderServiceImpl implements OrderService {
             cartService.clearCart(cart.getId());
 
             return savedOrder;
+        } catch (CartNotFoundException e) {
+            throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
         } catch (CartClearFailedException e) {
             throw new PlaceOrderFailedException(ResponseCode.CART_CLEAR_FAIL);
         } catch (Exception e) {
