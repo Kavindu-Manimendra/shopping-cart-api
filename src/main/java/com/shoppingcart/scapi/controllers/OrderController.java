@@ -21,11 +21,12 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    @PostMapping("/order/{userId}")
+    @PostMapping("/order")
     public ResponseEntity<APIResponseDto> createOrder(@RequestParam Long userId) {
-        Order order = null;
+        OrderDto orderDto = null;
         try {
-            order = orderService.placeOrder(userId);
+            Order order = orderService.placeOrder(userId);
+            orderDto = orderService.covertToDto(order);
         } catch (CartNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (PlaceOrderFailedException e) {
@@ -34,7 +35,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         ResponseCode.SUCCESS.setReason("Order created successfully!");
-        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, order));
+        return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, orderDto));
     }
 
     @GetMapping("/{orderId}/order")

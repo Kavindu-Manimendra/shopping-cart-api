@@ -132,7 +132,8 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private OrderDto covertToDto(Order order) {
+    @Override
+    public OrderDto covertToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
     }
 

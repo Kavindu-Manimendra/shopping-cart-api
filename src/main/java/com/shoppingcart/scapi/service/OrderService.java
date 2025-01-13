@@ -12,4 +12,5 @@ public interface OrderService {
     Order placeOrder(Long userId) throws CartNotFoundException, PlaceOrderFailedException;
     OrderDto getOrder(Long orderId) throws OrderNotFoundException;
     List<OrderDto> getUserOrders(Long userId) throws OrderNotFoundException;
+    OrderDto covertToDto(Order order);
 }
