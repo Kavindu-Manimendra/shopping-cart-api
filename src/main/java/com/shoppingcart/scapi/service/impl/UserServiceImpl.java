@@ -3,6 +3,7 @@ package com.shoppingcart.scapi.service.impl;
 import com.shoppingcart.scapi.dto.CreateUserRequest;
 import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.dto.UpdateUserRequest;
+import com.shoppingcart.scapi.dto.UserDto;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
@@ -11,12 +12,14 @@ import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 import com.shoppingcart.scapi.repo.UserRepo;
 import com.shoppingcart.scapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) throws UserNotFoundException {
@@ -86,5 +89,10 @@ public class UserServiceImpl implements UserService {
             ResponseCode.USER_DELETE_FAIL.setReason(e.getMessage());
             throw new UserDeleteFailedException(ResponseCode.USER_DELETE_FAIL);
         }
+    }
+
+    @Override
+    public UserDto convertUserToDto(User user) {
+        return modelMapper.map(user, UserDto.class);
     }
 }

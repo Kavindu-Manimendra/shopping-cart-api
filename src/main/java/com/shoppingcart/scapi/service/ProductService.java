@@ -8,7 +8,7 @@ import com.shoppingcart.scapi.exception.*;
 import java.util.List;
 
 public interface ProductService {
-    Product addProduct(ProductRequestDto request) throws ProductSaveFailedException;
+    Product addProduct(ProductRequestDto request) throws ProductAlreadyExistsException, ProductSaveFailedException;
     Product getProductById(Long id) throws ProductNotFoundException;
     void deleteProductById(Long id) throws ProductNotFoundException, ProductDeleteFailedException;
     Product updateProduct(ProductRequestDto request, Long productId) throws ProductNotFoundException, ProductSaveFailedException;

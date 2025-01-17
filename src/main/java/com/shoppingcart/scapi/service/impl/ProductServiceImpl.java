@@ -28,8 +28,13 @@ public class ProductServiceImpl implements ProductService {
     private final ImageRepo imageRepo;
 
     @Override
-    public Product addProduct(ProductRequestDto request) throws ProductSaveFailedException {
+    public Product addProduct(ProductRequestDto request) throws ProductAlreadyExistsException, ProductSaveFailedException {
         try {
+            if (productExists(request.getName(), request.getBrand())) {
+                ResponseCode.PRODUCT_ALREADY_EXISTS.setReason("Product already exists in the database.");
+                throw new ProductAlreadyExistsException(ResponseCode.PRODUCT_ALREADY_EXISTS);
+            }
+
             Category category = categoryRepo.findByName(request.getCategory().getName());
             if (category == null) {
                 category = categoryRepo.save(request.getCategory());
@@ -44,6 +49,8 @@ public class ProductServiceImpl implements ProductService {
                     category
             );
             return productRepo.save(product);
+        } catch (ProductAlreadyExistsException e) {
+            throw new ProductAlreadyExistsException(ResponseCode.PRODUCT_ALREADY_EXISTS);
         } catch (Exception e) {
             ResponseCode.CREATE_PRODUCT_FAIL.setReason(e.getMessage());
             throw new ProductSaveFailedException(ResponseCode.CREATE_PRODUCT_FAIL);
@@ -213,5 +220,9 @@ public class ProductServiceImpl implements ProductService {
             ResponseCode.CONVERT_TO_DTO_FAIL.setReason("Product convert to DTO failed. " + e.getMessage());
             throw new ConvertToDtoFailedException(ResponseCode.CONVERT_TO_DTO_FAIL);
         }
+    }
+
+    private boolean productExists(String name, String brand) {
+        return productRepo.existsByNameAndBrand(name, brand);
     }
 }
