@@ -16,6 +16,7 @@ public enum ResponseCode {
     UPDATE_PRODUCT_FAIL("Product update failed!", ""),
     DELETE_PRODUCT_FAIL("Product deletion failed!", ""),
     CONVERT_TO_PRODUCT_DTO_LIST_FAIL("Convert to productDto list failed!", ""),
+    PRODUCT_ALREADY_EXISTS("Product already exists!", ""),
 
     CATEGORY_NOT_FOUND("Category not found!", ""),
     LIST_CATEGORY_FAIL("Category listing failed!", ""),

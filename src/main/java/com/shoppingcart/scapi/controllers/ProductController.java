@@ -58,6 +58,8 @@ public class ProductController {
         Product savedProduct = null;
         try {
             savedProduct = productService.addProduct(product);
+        } catch (ProductAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (ProductSaveFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
