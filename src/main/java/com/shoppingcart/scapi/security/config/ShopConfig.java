@@ -1,4 +1,4 @@
-package com.shoppingcart.scapi.config;
+package com.shoppingcart.scapi.security.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
