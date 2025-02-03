@@ -50,7 +50,9 @@ public enum ResponseCode {
     USER_NOT_FOUND("User not found!", ""),
     USER_DELETE_FAIL("User delete failed!", ""),
     USER_UPDATE_FAIL("User update failed!", ""),
-    USER_CREATE_FAIL("User creation failed!", "");
+    USER_CREATE_FAIL("User creation failed!", ""),
+
+    UNAUTHORIZED("Unauthorized!", "");
 
     private String message;
     private String reason;
