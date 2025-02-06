@@ -13,6 +13,9 @@ import com.shoppingcart.scapi.repo.UserRepo;
 import com.shoppingcart.scapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserById(Long userId) throws UserNotFoundException {
@@ -50,7 +54,7 @@ public class UserServiceImpl implements UserService {
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
 
             return userRepo.save(user);
         } catch (UserCreateFailedException e) {
@@ -94,5 +98,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto convertUserToDto(User user) {
         return modelMapper.map(user, UserDto.class);
+    }
+
+    @Override
+    public User getAuthenticatedUser() throws UserNotFoundException {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            return userRepo.findByEmail(email);
+        } catch (Exception e) {
+            throw new UserNotFoundException(ResponseCode.USER_NOT_FOUND);
+        }
     }
 }

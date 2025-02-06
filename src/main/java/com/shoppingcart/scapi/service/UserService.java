@@ -15,4 +15,5 @@ public interface UserService {
     User updateUser(UpdateUserRequest request, Long userId)  throws UserUpdateFailedException;
     void deleteUser(Long userId) throws UserDeleteFailedException;
     UserDto convertUserToDto(User user);
+    User getAuthenticatedUser() throws UserNotFoundException;
 }

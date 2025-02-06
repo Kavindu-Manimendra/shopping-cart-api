@@ -9,6 +9,7 @@ import com.shoppingcart.scapi.repo.UserRepo;
 import com.shoppingcart.scapi.service.CartItemService;
 import com.shoppingcart.scapi.service.CartService;
 import com.shoppingcart.scapi.service.UserService;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class CartItemController {
     @PostMapping("/item/add")
     public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam Long productId, @RequestParam Integer quantity) {
         try {
-            User user = userService.getUserById(1L);
+            User user = userService.getAuthenticatedUser();
             Cart cart = cartService.initializeNewCart(user);
 
             cartItemService.addItemToCart(cart.getId(), productId, quantity);
@@ -33,6 +34,9 @@ public class CartItemController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (CartItemSaveFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (JwtException e) {
+            ResponseCode.UNAUTHORIZED.setReason(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(APIResponseDto.getInstance(ResponseCode.UNAUTHORIZED));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
