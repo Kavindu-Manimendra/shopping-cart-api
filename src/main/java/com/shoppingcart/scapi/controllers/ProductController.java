@@ -10,6 +10,7 @@ import com.shoppingcart.scapi.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,6 +54,7 @@ public class ProductController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, productDto));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<APIResponseDto> addProduct(@RequestBody ProductRequestDto product) {
         Product savedProduct = null;
@@ -69,6 +71,7 @@ public class ProductController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, savedProduct));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/update/{productId}")
     public ResponseEntity<APIResponseDto> updateProduct(@RequestBody ProductRequestDto product, @PathVariable("productId") Long id) {
         Product updatedProduct = null;
@@ -83,6 +86,7 @@ public class ProductController {
         return ResponseEntity.ok(APIResponseDto.getInstance(ResponseCode.SUCCESS, updatedProduct));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/delete/{productId}")
     public ResponseEntity<APIResponseDto> deleteProduct(@PathVariable("productId") Long id) {
         try {
