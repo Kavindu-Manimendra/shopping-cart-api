@@ -52,7 +52,7 @@ public class CartServiceImpl implements CartService {
         try {
             cart = getCart(id);
             cartItemRepo.deleteAllByCartId(id);
-            cart.getItems().clear();
+            cart.clearCart();
             cartRepo.deleteById(id);
         } catch (Exception e) {
             ResponseCode.CART_CLEAR_FAIL.setReason(e.getMessage());
