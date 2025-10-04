@@ -6,7 +6,7 @@ import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.exception.UserUpdateFailedException;
-import com.shoppingcart.scapi.service.UserService;
+import com.shoppingcart.scapi.service.AuthUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/users")
 public class UserController {
-    private final UserService userService;
+    private final AuthUserService userService;
 
     @GetMapping("/{userId}/user")
     public ResponseEntity<APIResponseDto> getUserById(@PathVariable Long userId) {
@@ -37,8 +37,7 @@ public class UserController {
     public ResponseEntity<APIResponseDto> createUser(@RequestBody CreateUserRequest request) {
         UserDto userDto = null;
         try {
-            User user = userService.createUser(request);
-            userDto = userService.convertUserToDto(user);
+            userDto = userService.createUser(request);
         } catch (UserCreateFailedException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
