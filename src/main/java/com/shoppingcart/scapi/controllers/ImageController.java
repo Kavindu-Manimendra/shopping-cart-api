@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/images")
+@CrossOrigin(origins = "*")
 public class ImageController {
     private final ImageService imageService;
 

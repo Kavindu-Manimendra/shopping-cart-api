@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/carts")
+@CrossOrigin(origins = "*")
 public class CartController {
     private final CartService cartService;
 
