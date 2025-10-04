@@ -24,8 +24,8 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
     private final CategoryRepo categoryRepo;
-    private final ModelMapper modelMapper;
     private final ImageRepo imageRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public Product addProduct(ProductRequestDto request) throws ProductAlreadyExistsException, ProductSaveFailedException {

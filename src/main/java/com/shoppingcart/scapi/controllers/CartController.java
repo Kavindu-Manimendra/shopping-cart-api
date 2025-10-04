@@ -26,7 +26,9 @@ public class CartController {
         Cart cart = null;
         try {
             cart = cartService.getCart(cartId);
-        } catch (CartNotFoundException | CartSaveFailedException e) {
+        } catch (CartNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(APIResponseDto.getInstance(e.getResponseCode()));
+        } catch (CartSaveFailedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(APIResponseDto.getInstance(e.getResponseCode()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

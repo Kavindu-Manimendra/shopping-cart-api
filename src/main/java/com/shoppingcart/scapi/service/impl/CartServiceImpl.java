@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -24,20 +25,17 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepo cartItemRepo;
     private final AtomicLong cartIdGenerator = new AtomicLong(0);
 
+    @Transactional
     @Override
     public Cart getCart(Long id) throws CartNotFoundException, CartSaveFailedException {
         Cart cart = null;
         try {
             cart = cartRepo.findById(id).get();
-            if (cart == null) {
-                ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or Cart ID does not exist in the database.");
-                throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
-            }
-
             BigDecimal totalAmount = cart.getTotalAmount();
             cart.setTotalAmount(totalAmount);
             return cartRepo.save(cart);
-        } catch (CartNotFoundException e) {
+        } catch (NoSuchElementException e) {
+            ResponseCode.CART_NOT_FOUND.setReason("Invalid ID or Cart ID does not exist in the database.");
             throw new CartNotFoundException(ResponseCode.CART_NOT_FOUND);
         } catch (Exception e) {
             ResponseCode.CART_SAVE_FAIL.setReason(e.getMessage());

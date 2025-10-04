@@ -5,12 +5,13 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.dto.UpdateUserRequest;
 import com.shoppingcart.scapi.dto.UserDto;
 import com.shoppingcart.scapi.entity.User;
+import com.shoppingcart.scapi.enums.Role;
 import com.shoppingcart.scapi.exception.UserCreateFailedException;
 import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 import com.shoppingcart.scapi.repo.UserRepo;
-import com.shoppingcart.scapi.service.UserService;
+import com.shoppingcart.scapi.service.AuthUserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -20,10 +21,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class AuthUserServiceImpl implements AuthUserService {
     private final UserRepo userRepo;
-    private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
     @Override
     public User getUserById(Long userId) throws UserNotFoundException {
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) throws UserCreateFailedException {
+    public UserDto createUser(CreateUserRequest request) throws UserCreateFailedException {
         try {
             if (userRepo.existsByEmail(request.getEmail())) {
                 ResponseCode.USER_CREATE_FAIL.setReason("Email already exists in the database.");
@@ -55,8 +56,10 @@ public class UserServiceImpl implements UserService {
             user.setLastName(request.getLastName());
             user.setEmail(request.getEmail());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setRole(Role.USER);
 
-            return userRepo.save(user);
+            User newUser = userRepo.save(user);
+            return convertUserToDto(newUser);
         } catch (UserCreateFailedException e) {
             throw new UserCreateFailedException(ResponseCode.USER_CREATE_FAIL);
         } catch (Exception e) {
@@ -105,7 +108,7 @@ public class UserServiceImpl implements UserService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
-            return userRepo.findByEmail(email);
+            return userRepo.findByEmail(email).get();
         } catch (Exception e) {
             throw new UserNotFoundException(ResponseCode.USER_NOT_FOUND);
         }
