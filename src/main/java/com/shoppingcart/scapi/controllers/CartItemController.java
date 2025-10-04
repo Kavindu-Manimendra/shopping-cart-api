@@ -5,10 +5,9 @@ import com.shoppingcart.scapi.dto.ResponseCode;
 import com.shoppingcart.scapi.entity.Cart;
 import com.shoppingcart.scapi.entity.User;
 import com.shoppingcart.scapi.exception.*;
-import com.shoppingcart.scapi.repo.UserRepo;
+import com.shoppingcart.scapi.service.AuthUserService;
 import com.shoppingcart.scapi.service.CartItemService;
 import com.shoppingcart.scapi.service.CartService;
-import com.shoppingcart.scapi.service.UserService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/cartItems")
+@CrossOrigin(origins = "*")
 public class CartItemController {
     private final CartItemService cartItemService;
     private final CartService cartService;
-    private final UserService userService;
+    private final AuthUserService userService;
 
     @PostMapping("/item/add")
     public ResponseEntity<APIResponseDto> addItemToCart(@RequestParam Long productId, @RequestParam Integer quantity) {

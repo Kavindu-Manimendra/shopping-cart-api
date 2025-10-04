@@ -9,9 +9,9 @@ import com.shoppingcart.scapi.exception.UserDeleteFailedException;
 import com.shoppingcart.scapi.exception.UserNotFoundException;
 import com.shoppingcart.scapi.exception.UserUpdateFailedException;
 
-public interface UserService {
+public interface AuthUserService {
     User getUserById(Long userId) throws UserNotFoundException;
-    User createUser(CreateUserRequest request)  throws UserCreateFailedException;
+    UserDto createUser(CreateUserRequest request)  throws UserCreateFailedException;
     User updateUser(UpdateUserRequest request, Long userId)  throws UserUpdateFailedException;
     void deleteUser(Long userId) throws UserDeleteFailedException;
     UserDto convertUserToDto(User user);
