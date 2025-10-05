@@ -28,7 +28,6 @@
         }
     ],
     "cpu": "1024",
-    "enableFaultInjection": false,
     "executionRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
     "family": "shopping-cart-task",
     "memory": "2048",
