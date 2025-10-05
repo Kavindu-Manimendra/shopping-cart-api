@@ -1,0 +1,69 @@
+{
+    "compatibilities": [
+        "EC2",
+        "MANAGED_INSTANCES",
+        "FARGATE"
+    ],
+    "containerDefinitions": [
+        {
+            "cpu": 0,
+            "environment": [],
+            "environmentFiles": [],
+            "essential": true,
+            "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shoppin-cart-repo:latest",
+            "mountPoints": [],
+            "name": "shopping-cart",
+            "portMappings": [
+                {
+                    "appProtocol": "http",
+                    "containerPort": 9090,
+                    "hostPort": 9090,
+                    "name": "shopping-cart-9090-tcp",
+                    "protocol": "tcp"
+                }
+            ],
+            "systemControls": [],
+            "ulimits": [],
+            "volumesFrom": []
+        }
+    ],
+    "cpu": "1024",
+    "enableFaultInjection": false,
+    "executionRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
+    "family": "shopping-cart-task",
+    "memory": "2048",
+    "networkMode": "awsvpc",
+    "placementConstraints": [],
+    "registeredAt": "2025-10-05T02:44:15.568Z",
+    "registeredBy": "arn:aws:iam::417705460453:root",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "revision": 2,
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "status": "ACTIVE",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/shopping-cart-task:2",
+    "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
+    "volumes": [],
+    "tags": []
+}
