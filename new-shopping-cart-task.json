@@ -1,0 +1,104 @@
+{
+  "compatibilities": [
+    "EC2",
+    "FARGATE",
+    "MANAGED_INSTANCES"
+  ],
+  "containerDefinitions": [
+    {
+      "cpu": 0,
+      "environment": [],
+      "essential": true,
+      "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shoppin-cart-repo:latest",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/new-shopping-cart-task",
+          "awslogs-create-group": "true",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "mountPoints": [],
+      "name": "shopping-cart",
+      "portMappings": [
+        {
+          "appProtocol": "http",
+          "containerPort": 9090,
+          "hostPort": 9090,
+          "name": "shopping-cart-9090-tcp",
+          "protocol": "tcp"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DATABASE_URL_CON",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_URL_CON::"
+        },
+        {
+          "name": "DATABASE_ROOT_USERNAME",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_ROOT_USERNAME::"
+        },
+        {
+          "name": "DATABASE_ROOT_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_ROOT_PASSWORD::"
+        }
+      ],
+      "systemControls": [],
+      "volumesFrom": []
+    }
+  ],
+  "cpu": "1024",
+  "executionRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
+  "family": "new-shopping-cart-task",
+  "memory": "3072",
+  "networkMode": "awsvpc",
+  "placementConstraints": [],
+  "registeredAt": "2025-10-05T10:00:03.462Z",
+  "registeredBy": "arn:aws:iam::417705460453:root",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "name": "ecs.capability.secrets.asm.environment-variables"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+    }
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "revision": 3,
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "status": "ACTIVE",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:3",
+  "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
+  "volumes": [],
+  "tags": []
+}

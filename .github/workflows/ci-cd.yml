@@ -46,7 +46,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: shopping-cart-task.json
+          task-definition: new-shopping-cart-task.json
           container-name: shopping-cart
           image: ${{ steps.build-image.outputs.image }}
 
@@ -54,8 +54,8 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: new-shopping-cart-service
-          cluster: new-shopping-cart-cluster
+          service: shopping-cart-service
+          cluster: shopping-cart-cluster
           wait-for-service-stability: true
 
 
