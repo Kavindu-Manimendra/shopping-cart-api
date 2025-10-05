@@ -46,16 +46,16 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: springboot-app-task.json
-          container-name: springboot-demo
+          task-definition: shopping-cart-task.json
+          container-name: shopping-cart
           image: ${{ steps.build-image.outputs.image }}
 
       - name: Deploy amazon ecs task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: springboot-demo-service
-          cluster: dev-cluster
+          service: shopping-cart-service
+          cluster: shopping-cart-cluster
           wait-for-service-stability: true
 
 
