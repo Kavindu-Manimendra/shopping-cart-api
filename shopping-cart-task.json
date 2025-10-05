@@ -62,7 +62,7 @@
         "operatingSystemFamily": "LINUX"
     },
     "status": "ACTIVE",
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/shopping-cart-task:3",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/shopping-cart-task:4",
     "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
     "volumes": [],
     "tags": []
