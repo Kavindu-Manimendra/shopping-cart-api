@@ -9,7 +9,7 @@
       "cpu": 0,
       "environment": [],
       "essential": true,
-      "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shoppin-cart-repo:latest",
+      "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shoppin-cart-repo:41f8b2edfcab7a54317efd0c9c10aee34c231f56",
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -42,6 +42,10 @@
         {
           "name": "DATABASE_ROOT_PASSWORD",
           "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_ROOT_PASSWORD::"
+        },
+        {
+          "name": "AUTH_TOKEN_SECRET_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:AUTH_TOKEN_SECRET_KEY::"
         }
       ],
       "systemControls": [],
@@ -54,7 +58,7 @@
   "memory": "3072",
   "networkMode": "awsvpc",
   "placementConstraints": [],
-  "registeredAt": "2025-10-05T10:00:03.462Z",
+  "registeredAt": "2025-10-05T11:51:05.031Z",
   "registeredBy": "arn:aws:iam::417705460453:root",
   "requiresAttributes": [
     {
@@ -91,13 +95,13 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "revision": 3,
+  "revision": 6,
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
   "status": "ACTIVE",
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:3",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:6",
   "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
   "volumes": [],
   "tags": []
