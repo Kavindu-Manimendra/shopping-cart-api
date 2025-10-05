@@ -54,8 +54,8 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: shopping-cart-service
-          cluster: shopping-cart-cluster
+          service: new-shopping-cart-service
+          cluster: new-shopping-cart-cluster
           wait-for-service-stability: true
 
 
