@@ -8,8 +8,9 @@
     {
       "cpu": 0,
       "environment": [],
+      "environmentFiles": [],
       "essential": true,
-      "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shoppin-cart-repo:41f8b2edfcab7a54317efd0c9c10aee34c231f56",
+      "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shopping/shopping-cart:latest",
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -17,7 +18,8 @@
           "awslogs-create-group": "true",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
-        }
+        },
+        "secretOptions": []
       },
       "mountPoints": [],
       "name": "shopping-cart",
@@ -33,32 +35,34 @@
       "secrets": [
         {
           "name": "DATABASE_URL_CON",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_URL_CON::"
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shopping-cart-u3LzFX:DATABASE_URL_CON::"
         },
         {
           "name": "DATABASE_ROOT_USERNAME",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_ROOT_USERNAME::"
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shopping-cart-u3LzFX:DATABASE_ROOT_USERNAME::"
         },
         {
           "name": "DATABASE_ROOT_PASSWORD",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:DATABASE_ROOT_PASSWORD::"
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shopping-cart-u3LzFX:DATABASE_ROOT_PASSWORD::"
         },
         {
           "name": "AUTH_TOKEN_SECRET_KEY",
-          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shoppingCart-ZbGQgQ:AUTH_TOKEN_SECRET_KEY::"
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:417705460453:secret:/secret/shopping-cart-u3LzFX:AUTH_TOKEN_SECRET_KEY::"
         }
       ],
       "systemControls": [],
+      "ulimits": [],
       "volumesFrom": []
     }
   ],
   "cpu": "1024",
+  "enableFaultInjection": false,
   "executionRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
   "family": "new-shopping-cart-task",
   "memory": "3072",
   "networkMode": "awsvpc",
   "placementConstraints": [],
-  "registeredAt": "2025-10-05T11:51:05.031Z",
+  "registeredAt": "2025-10-06T06:54:10.538Z",
   "registeredBy": "arn:aws:iam::417705460453:root",
   "requiresAttributes": [
     {
@@ -95,13 +99,13 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "revision": 6,
+  "revision": 9,
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
   "status": "ACTIVE",
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:6",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:9",
   "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
   "volumes": [],
   "tags": []
