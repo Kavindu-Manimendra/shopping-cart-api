@@ -8,7 +8,6 @@
     {
       "cpu": 0,
       "environment": [],
-      "environmentFiles": [],
       "essential": true,
       "image": "417705460453.dkr.ecr.us-east-1.amazonaws.com/shopping/shopping-cart:latest",
       "logConfiguration": {
@@ -18,8 +17,7 @@
           "awslogs-create-group": "true",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
-        },
-        "secretOptions": []
+        }
       },
       "mountPoints": [],
       "name": "shopping-cart",
@@ -51,18 +49,16 @@
         }
       ],
       "systemControls": [],
-      "ulimits": [],
       "volumesFrom": []
     }
   ],
   "cpu": "1024",
-  "enableFaultInjection": false,
   "executionRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
   "family": "new-shopping-cart-task",
   "memory": "3072",
   "networkMode": "awsvpc",
   "placementConstraints": [],
-  "registeredAt": "2025-10-06T06:54:10.538Z",
+  "registeredAt": "2025-10-06T07:12:02.503Z",
   "registeredBy": "arn:aws:iam::417705460453:root",
   "requiresAttributes": [
     {
@@ -99,13 +95,13 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "revision": 9,
+  "revision": 10,
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
   "status": "ACTIVE",
-  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:9",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-1:417705460453:task-definition/new-shopping-cart-task:10",
   "taskRoleArn": "arn:aws:iam::417705460453:role/shopping-cart-ecs-task-role",
   "volumes": [],
   "tags": []
